@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 工具选型指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --surface-2: #f4f3ef;
+    --border: #e8e6df;
+    --border-2: #d5d2c8;
+    --text: #1a1917;
+    --text-2: #5c5a54;
+    --text-3: #9b9890;
+    --shadow: 0 10px 28px rgba(26, 25, 23, 0.06);
+    --radius: 10px;
+
+    --slate-bg: #f0efe8; --slate-mid: #7a786e; --slate-text: #3c3b36;
+    --blue-bg: #e8f1fb; --blue-mid: #3578d4; --blue-text: #0d3d7a;
+    --teal-bg: #e0f5ee; --teal-mid: #1a9e75; --teal-text: #085041;
+    --purple-bg: #eeedfe; --purple-mid: #6259c4; --purple-text: #3a2e8e;
+    --amber-bg: #fef3da; --amber-mid: #c98a18; --amber-text: #6b4408;
+    --coral-bg: #faede8; --coral-mid: #c45a35; --coral-text: #7a2e14;
+    --pink-bg: #fceaf2; --pink-mid: #c24880; --pink-text: #7a1f4a;
+    --green-bg: #ebf5dc; --green-mid: #4b7e18; --green-text: #274409;
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+
+  .topbar-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    background: rgba(250, 250, 248, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(232, 230, 223, 0.9);
+  }
+
+  .topbar {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1a1917 0%, #6259c4 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.92rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .brand-copy {
+    min-width: 0;
+  }
+
+  .brand-title {
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    color: var(--text-3);
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .mega-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .mega-item {
+    position: relative;
+  }
+
+  .mega-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .mega-item:hover .mega-trigger,
+  .mega-item:focus-within .mega-trigger {
+    background: var(--surface);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+
+  .mega-panel {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 10px);
+    min-width: 760px;
+    display: none;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 24px 56px rgba(26, 25, 23, 0.12);
+    padding: 20px;
+  }
+
+  .mega-item:hover .mega-panel,
+  .mega-item:focus-within .mega-panel {
+    display: grid;
+  }
+
+  .mega-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .mega-col-title {
+    font-size: 0.76rem;
+    color: var(--text-3);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .mega-links {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mega-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 12px;
+    border-radius: 12px;
+    transition: background 0.15s ease;
+  }
+
+  .mega-link:hover {
+    background: var(--surface-2);
+  }
+
+  .mega-link-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .mega-link-sub {
+    color: var(--text-2);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .header-wrap {
+    background:
+      radial-gradient(circle at top left, rgba(98, 89, 196, 0.10), transparent 38%),
+      radial-gradient(circle at top right, rgba(26, 158, 117, 0.08), transparent 34%),
+      var(--bg);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .header {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 42px 24px 28px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: nowrap;
+  }
+
+  .header-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .eyebrow {
+    color: var(--text-3);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  h1 {
+    font-size: 3.1rem;
+    line-height: 1.03;
+    margin-bottom: 14px;
+    letter-spacing: 0;
+    max-width: 11ch;
+  }
+
+  .subtitle {
+    color: var(--text-2);
+    font-size: 1rem;
+    max-width: 60ch;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .header-meta {
+    flex: 0 0 260px;
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .meta-block {
+    color: var(--text-3);
+    font-size: 0.74rem;
+    line-height: 1.7;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-2);
+  }
+
+  .lang-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-2);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .lang-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .hero-note {
+    margin-top: 26px;
+    padding: 18px 20px;
+    border: 1px solid rgba(232, 230, 223, 0.9);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.82);
+    box-shadow: 0 12px 34px rgba(26, 25, 23, 0.06);
+  }
+
+  .hero-note-title {
+    font-size: 0.76rem;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .hero-note p {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .selector-shell {
+    display: grid;
+    gap: 14px;
+    margin: 28px 0 22px;
+  }
+
+  .selector-panel,
+  .result-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(26, 25, 23, 0.05);
+  }
+
+  .selector-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .selector-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .selector-sub {
+    color: var(--text-2);
+    font-size: 0.82rem;
+  }
+
+  .clear-btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-2);
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .selector-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .selector-hint {
+    color: var(--text-3);
+    font-size: 0.74rem;
+  }
+
+  .apply-btn {
+    appearance: none;
+    border: 1px solid var(--text);
+    background: var(--text);
+    color: var(--surface);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .filter-group {
+    display: grid;
+    gap: 8px;
+  }
+
+  .filter-label {
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-pill:hover {
+    border-color: var(--border-2);
+    color: var(--text);
+  }
+
+  .filter-pill.active {
+    background: var(--text);
+    color: var(--surface);
+    border-color: var(--text);
+  }
+
+  .result-eyebrow {
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .result-summary {
+    color: var(--text-2);
+    font-size: 0.78rem;
+    margin-bottom: 14px;
+  }
+
+  .result-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .result-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    background: var(--surface);
+  }
+
+  .result-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .result-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .result-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-shrink: 0;
+  }
+
+  .result-name {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .result-category {
+    color: var(--text-3);
+    font-size: 0.71rem;
+    white-space: nowrap;
+  }
+
+  .result-desc {
+    color: var(--text-2);
+    font-size: 0.76rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .result-why {
+    color: var(--text);
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .secondary-stack {
+    display: grid;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .secondary-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .secondary-panel[open] {
+    box-shadow: var(--shadow);
+  }
+
+  .secondary-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 17px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .secondary-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .secondary-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .secondary-sub {
+    font-size: 0.76rem;
+    color: var(--text-2);
+  }
+
+  .secondary-chevron {
+    color: var(--text-3);
+    font-size: 0.9rem;
+    transition: transform 0.15s ease;
+  }
+
+  .secondary-panel[open] .secondary-chevron {
+    transform: rotate(180deg);
+  }
+
+  .secondary-body {
+    padding: 0 16px 16px;
+  }
+
+  .nav-wrap {
+    position: sticky;
+    top: 64px;
+    z-index: 60;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+
+  .nav {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    flex-shrink: 0;
+    padding: 13px 14px;
+    font-size: 0.8rem;
+    color: var(--text-2);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .nav-item.active {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .overview-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .overview-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .overview-panel-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .overview-panel-sub {
+    color: var(--text-2);
+    font-size: 0.76rem;
+  }
+
+  .overview-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .overview-table th,
+  .overview-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    text-align: left;
+  }
+
+  .overview-table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .overview-table th {
+    color: var(--text-3);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(244, 243, 239, 0.45);
+  }
+
+  .overview-table td {
+    font-size: 0.78rem;
+  }
+
+  .overview-row-cat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .overview-row-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--accent, var(--slate-mid));
+  }
+
+  .overview-row-name {
+    font-weight: 700;
+  }
+
+  .overview-row-desc {
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  .overview-row-picks {
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .overview-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+
+  .overview-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    border-color: var(--border-2);
+  }
+
+  .overview-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 10px 0 0 10px;
+    background: var(--accent, var(--slate-mid));
+  }
+
+  .overview-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent-bg, var(--surface-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .overview-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .overview-text {
+    min-width: 0;
+  }
+
+  .overview-sub {
+    color: var(--text-2);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    max-width: 40ch;
+  }
+
+  .overview-count {
+    color: var(--text-2);
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--accent-bg, var(--surface-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.22rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .section-desc {
+    color: var(--text-2);
+    font-size: 0.84rem;
+  }
+
+  .when-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    margin: 16px 0 10px;
+  }
+
+  .when-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .when-chip {
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    color: var(--text-2);
+    background: var(--surface);
+  }
+
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+    gap: 12px;
+  }
+
+  .tool-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 16px 14px;
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .tool-card:hover {
+    border-color: var(--border-2);
+    box-shadow: var(--shadow);
+  }
+
+  .tool-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent, var(--slate-mid));
+  }
+
+  .tool-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .tool-id {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .tool-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .tool-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .tool-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .badge {
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .badge-top { background: var(--amber-bg); color: var(--amber-text); border-color: #eec97a; }
+  .badge-cn { background: var(--blue-bg); color: var(--blue-text); border-color: #7aaeee; }
+  .badge-open { background: var(--teal-bg); color: var(--teal-text); border-color: #7ed2bb; }
+  .badge-enterprise { background: var(--purple-bg); color: var(--purple-text); border-color: #aaa4ec; }
+  .badge-new { background: var(--coral-bg); color: var(--coral-text); border-color: #eaa48a; }
+  .badge-local { background: var(--slate-bg); color: var(--slate-text); border-color: #b8b5aa; }
+
+  .tool-desc {
+    font-size: 0.79rem;
+    color: var(--text-2);
+    line-height: 1.58;
+    margin-bottom: 12px;
+  }
+
+  .tool-detail {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: grid;
+    gap: 7px;
+  }
+
+  .detail-row {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 8px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .detail-label {
+    color: var(--text-3);
+    font-weight: 700;
+  }
+
+  .detail-val {
+    color: var(--text-2);
+  }
+
+  .decision-section {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .decision-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .decision-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .decision-q {
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .decision-a {
+    color: var(--text-2);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  .decision-a strong {
+    color: var(--text);
+  }
+
+  .footer {
+    max-width: 1240px;
+    margin: 34px auto 0;
+    padding: 18px 24px 32px;
+    border-top: 1px solid var(--border);
+    color: var(--text-3);
+    font-size: 0.72rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 900px) {
+    .topbar {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .mega-nav {
+      order: 3;
+      width: 100%;
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .mega-panel {
+      min-width: 620px;
+    }
+
+    .header-top {
+      flex-wrap: wrap;
+    }
+
+    .header-meta {
+      flex: 1 1 100%;
+      min-width: 0;
+      align-items: flex-start;
+    }
+
+    .overview-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .decision-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .topbar {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .brand-sub {
+      display: none;
+    }
+
+    .mega-panel {
+      display: none !important;
+    }
+
+    .page, .header, .nav {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .header-top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-meta {
+      flex: 1 1 auto;
+      min-width: 0;
+      align-items: flex-start;
+    }
+
+    .selector-heading {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .selector-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .subtitle {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    h1 {
+      font-size: 2.35rem;
+      max-width: 100%;
+    }
+
+    .overview-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .secondary-body {
+      padding: 0 12px 12px;
+    }
+
+    .overview-table,
+    .overview-table thead,
+    .overview-table tbody,
+    .overview-table tr,
+    .overview-table th,
+    .overview-table td {
+      display: block;
+      width: 100%;
+    }
+
+    .overview-table thead {
+      display: none;
+    }
+
+    .overview-table td {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      border-bottom: 0;
+    }
+
+    .overview-table tr {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tool-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media print {
+    .nav-wrap { position: static; backdrop-filter: none; }
+    .section { display: block !important; page-break-inside: avoid; }
+    .section + .section { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar-wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">AI</div>
+        <div class="brand-copy">
+          <div class="brand-title">AI Tool Selector</div>
+          <div class="brand-sub">Choose faster. Browse deeper.</div>
+        </div>
+      </div>
+      <div class="mega-nav">
+        <div class="mega-item">
+          <button class="mega-trigger">Start Here</button>
+          <div class="mega-panel">
+            <div class="mega-grid">
+              <div>
+                <div class="mega-col-title">Common Routes</div>
+                <div class="mega-links">
+                  <a class="mega-link" href="#" onclick="switchTab('overview'); return false;">
+                    <div class="mega-link-title">Homepage Selector</div>
+                    <div class="mega-link-sub">Use filters first if you are still figuring out what kind of tool you need.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('search'); return false;">
+                    <div class="mega-link-title">Find live information</div>
+                    <div class="mega-link-sub">Search the web, monitor trends, and compare current tools or competitors.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('docs'); return false;">
+                    <div class="mega-link-title">Ask your own materials</div>
+                    <div class="mega-link-sub">Upload interview transcripts, PDFs, notes, and internal docs.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('content'); return false;">
+                    <div class="mega-link-title">Turn work into deliverables</div>
+                    <div class="mega-link-sub">Make reports, decks, summaries, and polished output.</div>
+                  </a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-col-title">Most Common First Picks</div>
+                <div class="mega-links">
+                  <a class="mega-link" href="#" onclick="switchTab('assistants'); return false;">
+                    <div class="mega-link-title">General AI assistants</div>
+                    <div class="mega-link-sub">Start with ChatGPT, Claude, Gemini, Kimi, and DeepSeek.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('images'); return false;">
+                    <div class="mega-link-title">Image and visual tools</div>
+                    <div class="mega-link-sub">Explore Midjourney, Jimeng, Firefly, and design-first visual tools.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('coding'); return false;">
+                    <div class="mega-link-title">Coding and app building</div>
+                    <div class="mega-link-sub">Find IDE copilots, agentic coding tools, and fast prototyping products.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('agents'); return false;">
+                    <div class="mega-link-title">Automation and agents</div>
+                    <div class="mega-link-sub">Connect workflows, bots, and internal AI apps across tools.</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mega-item">
+          <button class="mega-trigger">Browse Categories</button>
+          <div class="mega-panel">
+            <div class="mega-grid">
+              <div>
+                <div class="mega-col-title">Product Layers</div>
+                <div class="mega-links">
+                  <a class="mega-link" href="#" onclick="switchTab('assistants'); return false;">
+                    <div class="mega-link-title">Everyday AI Assistants</div>
+                    <div class="mega-link-sub">General-purpose tools for asking, writing, translating, and thinking.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('search'); return false;">
+                    <div class="mega-link-title">Search / Deep Research</div>
+                    <div class="mega-link-sub">Tools for live web search, source-backed answers, and monitoring.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('docs'); return false;">
+                    <div class="mega-link-title">Document-grounded Research</div>
+                    <div class="mega-link-sub">AI that answers from your own materials instead of the open web.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('content'); return false;">
+                    <div class="mega-link-title">Writing / Docs / Slides</div>
+                    <div class="mega-link-sub">Tools that turn ideas into deliverables people can actually use.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('meetings'); return false;">
+                    <div class="mega-link-title">Meetings / Transcription</div>
+                    <div class="mega-link-sub">Capture interviews, meeting notes, and action items.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('knowledge'); return false;">
+                    <div class="mega-link-title">Knowledge Base / Second Brain</div>
+                    <div class="mega-link-sub">Long-term storage, retrieval, and internal knowledge organization.</div>
+                  </a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-col-title">Creation + Build</div>
+                <div class="mega-links">
+                  <a class="mega-link" href="#" onclick="switchTab('images'); return false;">
+                    <div class="mega-link-title">Image / Design Generation</div>
+                    <div class="mega-link-sub">Posters, concept visuals, brand assets, and design exploration.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('video'); return false;">
+                    <div class="mega-link-title">Video / Voice / Music</div>
+                    <div class="mega-link-sub">Short videos, avatars, voiceovers, and music drafts.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('coding'); return false;">
+                    <div class="mega-link-title">Coding / App Building</div>
+                    <div class="mega-link-sub">Write code, modify projects, and generate prototypes or apps.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('agents'); return false;">
+                    <div class="mega-link-title">Workflow / Agent Platforms</div>
+                    <div class="mega-link-sub">Automations, AI apps, multi-step workflows, and bots.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('scraping'); return false;">
+                    <div class="mega-link-title">Web Data Collection</div>
+                    <div class="mega-link-sub">Turn websites into structured data or LLM-ready context.</div>
+                  </a>
+                  <a class="mega-link" href="#" onclick="switchTab('models'); return false;">
+                    <div class="mega-link-title">Model Taxonomy</div>
+                    <div class="mega-link-sub">Understand the engines under the products: flagship, open, and Chinese models.</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mega-item">
+          <button class="mega-trigger" onclick="switchTab('models')">Models</button>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="lang-switch" aria-label="Language switch">
+          <button class="lang-btn active" data-lang="zh">中文</button>
+          <button class="lang-btn" data-lang="en">English</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-wrap">
+    <div class="header">
+      <div class="header-top">
+        <div class="header-main">
+          <div class="eyebrow" id="eyebrow">AI Tool Selector Guide</div>
+          <h1 id="page-title"></h1>
+          <p class="subtitle" id="page-subtitle"></p>
+        </div>
+        <div class="header-meta">
+          <div class="meta-block" id="meta-block"></div>
+        </div>
+      </div>
+      <div class="hero-note">
+        <div class="hero-note-title" id="hero-note-title-1"></div>
+        <p id="hero-note-body-1"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-wrap">
+    <div class="nav" id="nav"></div>
+  </div>
+
+  <div class="page">
+    <div id="tab-overview" class="section active">
+      <div class="selector-shell">
+        <div class="selector-panel">
+          <div class="selector-heading">
+            <div>
+              <div class="selector-title" id="selector-title"></div>
+              <div class="selector-sub" id="selector-sub"></div>
+            </div>
+            <button class="clear-btn" id="clear-filters-btn" onclick="resetFilters()"></button>
+          </div>
+          <div class="filter-stack" id="selector-filters"></div>
+          <div class="selector-actions">
+            <div class="selector-hint" id="selector-hint"></div>
+            <button class="apply-btn" id="apply-filters-btn" onclick="applyFilters()"></button>
+          </div>
+        </div>
+        <div class="result-panel" id="result-panel">
+          <div class="result-eyebrow" id="results-title"></div>
+          <div class="result-summary" id="results-summary"></div>
+          <div class="result-grid" id="results-grid"></div>
+        </div>
+      </div>
+      <div class="secondary-stack">
+        <details class="secondary-panel" open>
+          <summary class="secondary-summary">
+            <div>
+              <div class="secondary-title" id="featured-block-title"></div>
+              <div class="secondary-sub" id="featured-block-sub"></div>
+            </div>
+            <span class="secondary-chevron">⌄</span>
+          </summary>
+          <div class="secondary-body">
+            <div class="overview-grid" id="overview-grid"></div>
+          </div>
+        </details>
+        <details class="secondary-panel">
+          <summary class="secondary-summary">
+            <div>
+              <div class="secondary-title" id="quick-title"></div>
+              <div class="secondary-sub" id="quick-subtitle"></div>
+            </div>
+            <span class="secondary-chevron">⌄</span>
+          </summary>
+          <div class="secondary-body">
+            <div class="decision-grid" id="quick-grid"></div>
+          </div>
+        </details>
+        <details class="secondary-panel">
+          <summary class="secondary-summary">
+            <div>
+              <div class="secondary-title" id="overview-panel-title"></div>
+              <div class="secondary-sub" id="overview-panel-sub"></div>
+            </div>
+            <span class="secondary-chevron">⌄</span>
+          </summary>
+          <div class="secondary-body">
+            <table class="overview-table">
+              <thead>
+                <tr>
+                  <th id="overview-head-1"></th>
+                  <th id="overview-head-2"></th>
+                  <th id="overview-head-3"></th>
+                </tr>
+              </thead>
+              <tbody id="overview-table-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div id="sections-root"></div>
+  </div>
+
+  <div class="footer">
+    <span id="footer-left"></span>
+    <span id="footer-mid"></span>
+    <span id="footer-right"></span>
+  </div>
+
+<script>
+const uiText = {
+  zh: {
+    title: 'AI 工具选型指南',
+    subtitle: '给第一次做 AI 选型的人：先按任务找入口，再按模型理解能力边界。',
+    meta: '版本 3.1 · 2026-05\\n12 个分类 · 100+ 个产品\\n适用：研究 / 产品 / 设计 / 运营 / 开发',
+    hero1Title: '第一步：先判断任务',
+    hero1Body: '你现在更像是在找信息、读材料、出报告、做图、写代码，还是跑自动化？',
+    hero2Title: '第二步：再判断来源',
+    hero2Body: '答案需要来自实时网络、你自己的文档、团队知识库，还是模型本身的常识？',
+    hero3Title: '第三步：再看产出',
+    hero3Body: '你要的是聊天问答、研究报告、PPT、图片视频、代码，还是可重复执行的流程？',
+    featuredBlockTitle: '从常见入口开始',
+    featuredBlockSub: '如果你只是想先知道“现在该点哪个 AI”，先看这几条主路线。',
+    overviewPanelTitle: '完整分类表',
+    overviewPanelSub: '当你已经知道任务方向，再用这张表快速定位更细的工具带。',
+    overviewHead1: '分类',
+    overviewHead2: '这类工具是干什么的',
+    overviewHead3: '优先认识',
+    quickTitle: '最常见的四种起点',
+    quick: [
+      ['我要看最新行业信息', '用 <strong>Perplexity</strong> 或 <strong>Genspark</strong>，适合实时搜索、带来源研究。'],
+      ['我要只基于自己的材料问答', '用 <strong>NotebookLM</strong>，最适合文档型研究和访谈材料。'],
+      ['我要快速产出报告 / PPT', '用 <strong>Gamma</strong>、<strong>Canva AI</strong>、<strong>Notion AI</strong>。'],
+      ['我要做中文长文和中文协作', '先看 <strong>Kimi</strong>、<strong>DeepSeek</strong>、<strong>豆包</strong>、<strong>通义千问</strong>。']
+    ],
+    overviewSection: '总览',
+    toolCount: '个产品',
+    whenLabel: '适用场景',
+    decisionTitle: '如何选',
+    detailFit: '适合',
+    detailWhy: '看点',
+    footerLeft: 'AI 工具选型指南 · 2026',
+    footerMid: '产品层 + 模型层 · 中英双语切换',
+    footerRight: '面向：想知道“现在该用哪个 AI”的人'
+  },
+  en: {
+    title: 'AI Tool Selector Guide',
+    subtitle: 'For first-time AI selection: start with the job, then compare model capability layers.',
+    meta: 'Version 3.1 · 2026-05\\n12 categories · 100+ products\\nFor research / product / design / ops / engineering',
+    hero1Title: 'Step 1: Pick the job',
+    hero1Body: 'Are you searching the web, reading source material, making a deck, generating visuals, coding, or automating work?',
+    hero2Title: 'Step 2: Pick the source',
+    hero2Body: 'Should the answer come from the live web, your own files, a team knowledge base, or the model’s built-in knowledge?',
+    hero3Title: 'Step 3: Pick the output',
+    hero3Body: 'Do you need a chat answer, a report, slides, images, code, or a repeatable workflow?',
+    featuredBlockTitle: 'Start with common routes',
+    featuredBlockSub: 'If you just want to know which AI to try first, begin with these main lanes.',
+    overviewPanelTitle: 'Full Taxonomy',
+    overviewPanelSub: 'Once you know the task direction, use this table to zoom into the right tool lane.',
+    overviewHead1: 'Category',
+    overviewHead2: 'What It Covers',
+    overviewHead3: 'Start With',
+    quickTitle: 'Four common starting points',
+    quick: [
+      ['I need live web research', 'Use <strong>Perplexity</strong> or <strong>Genspark</strong> for up-to-date search with sources.'],
+      ['I need answers only from my own files', 'Use <strong>NotebookLM</strong> for document-grounded research and interview materials.'],
+      ['I need a report or deck fast', 'Use <strong>Gamma</strong>, <strong>Canva AI</strong>, or <strong>Notion AI</strong>.'],
+      ['I need strong Chinese-language support', 'Start with <strong>Kimi</strong>, <strong>DeepSeek</strong>, <strong>Doubao</strong>, and <strong>Qwen</strong>.']
+    ],
+    overviewSection: 'Overview',
+    toolCount: 'products',
+    whenLabel: 'Use Cases',
+    decisionTitle: 'How To Choose',
+    detailFit: 'Best For',
+    detailWhy: 'Why',
+    footerLeft: 'AI Tool Selector Guide · 2026',
+    footerMid: 'Product layer + model layer · Bilingual toggle',
+    footerRight: 'For anyone asking: “which AI should I use now?”'
+  }
+};
+
+const categories = [
+  {
+    id: 'models',
+    icon: '🧠',
+    accent: 'var(--purple-mid)',
+    accentBg: 'var(--purple-bg)',
+    title: { zh: '模型图谱', en: 'Model Taxonomy' },
+    desc: {
+      zh: '先理解底层能力层：旗舰多模态、快模型、开源模型，以及中国主流模型家族。',
+      en: 'Understand the model layer first: flagship multimodal, fast workhorse, open models, and major Chinese model families.'
+    },
+    chips: {
+      zh: ['旗舰多模态', '开源模型', '中国模型', '推理与成本平衡'],
+      en: ['Flagship multimodal', 'Open models', 'Chinese model families', 'Reasoning vs. speed']
+    },
+    decisions: {
+      zh: [
+        ['要最强综合能力', '看 <strong>GPT-5.4</strong>、<strong>Claude Opus 4.6</strong>、<strong>Gemini 3.1 Pro</strong>。'],
+        ['要日常主力和更快响应', '看 <strong>Claude Sonnet 4.6</strong>、<strong>Gemini 3 Flash</strong>、<strong>Gemini 3.1 Flash-Lite</strong>。'],
+        ['要开放生态或本地部署', '看 <strong>Gemma 4</strong>、<strong>Llama 4</strong>、<strong>Qwen</strong>、<strong>DeepSeek</strong>。'],
+        ['要中国语境和本土生态', '看 <strong>豆包 Seed</strong>、<strong>MiniMax</strong>、<strong>混元</strong>、<strong>文心</strong>、<strong>GLM</strong>。']
+      ],
+      en: [
+        ['Need the highest-end frontier stack', 'Look at <strong>GPT-5.4</strong>, <strong>Claude Opus 4.6</strong>, and <strong>Gemini 3.1 Pro</strong>.'],
+        ['Need fast daily production models', 'Look at <strong>Claude Sonnet 4.6</strong>, <strong>Gemini 3 Flash</strong>, and <strong>Gemini 3.1 Flash-Lite</strong>.'],
+        ['Need open ecosystems or local deployment', 'Look at <strong>Gemma 4</strong>, <strong>Llama 4</strong>, <strong>Qwen</strong>, and <strong>DeepSeek</strong>.'],
+        ['Need Chinese-first model ecosystems', 'Look at <strong>Doubao Seed</strong>, <strong>MiniMax</strong>, <strong>Hunyuan</strong>, <strong>ERNIE</strong>, and <strong>GLM</strong>.']
+      ]
+    },
+    tools: [
+      {
+        name: '旗舰多模态',
+        logo: 'https://www.google.com/s2/favicons?domain=openai.com&sz=64',
+        badges: ['top'],
+        desc: {
+          zh: '适合做高难度推理、跨模态分析、复杂编程和高价值任务，是 2026 年主流闭源能力天花板。',
+          en: 'Best for frontier reasoning, multimodal analysis, complex coding, and high-value tasks across major proprietary stacks.'
+        },
+        fit: {
+          zh: '企业主力模型、复杂研究、Agent 与编程',
+          en: 'Enterprise default models, deep research, agents, and coding'
+        },
+        why: {
+          zh: 'GPT-5.4 · Claude Opus 4.6 · Gemini 3.1 Pro',
+          en: 'GPT-5.4 · Claude Opus 4.6 · Gemini 3.1 Pro'
+        }
+      },
+      {
+        name: '快模型 / 主力模型',
+        logo: 'https://www.google.com/s2/favicons?domain=anthropic.com&sz=64',
+        badges: [],
+        desc: {
+          zh: '更适合团队日常大规模使用：速度、成本、质量更平衡，通常是写作、分析和协作的常用默认档。',
+          en: 'The daily workhorse tier: a better balance of speed, cost, and quality for writing, analysis, and large-scale use.'
+        },
+        fit: {
+          zh: '日常写作、分析、协作、批量任务',
+          en: 'Daily writing, analysis, collaboration, and batch workflows'
+        },
+        why: {
+          zh: 'Claude Sonnet 4.6 · Gemini 3 Flash · Gemini 3.1 Flash-Lite',
+          en: 'Claude Sonnet 4.6 · Gemini 3 Flash · Gemini 3.1 Flash-Lite'
+        }
+      },
+      {
+        name: '全球开源模型',
+        logo: 'https://www.google.com/s2/favicons?domain=ai.google.dev&sz=64',
+        badges: ['open'],
+        desc: {
+          zh: '适合自建、微调、本地部署和开发者生态，强调开放权重与可控性。',
+          en: 'Best for self-hosting, fine-tuning, local deployment, and developer ecosystems built around open weights.'
+        },
+        fit: {
+          zh: '自定义应用、本地推理、开发者平台',
+          en: 'Custom apps, local inference, and developer platforms'
+        },
+        why: {
+          zh: 'Gemma 4（Google）· Llama 4（Meta）',
+          en: 'Gemma 4 (Google) · Llama 4 (Meta)'
+        }
+      },
+      {
+        name: '中国闭源主力模型',
+        logo: 'https://www.google.com/s2/favicons?domain=minimax.io&sz=64',
+        badges: ['cn'],
+        desc: {
+          zh: '适合中文语境、国内产品生态、商业落地和多模态场景，是中国大厂与独角兽的核心能力层。',
+          en: 'Designed for Chinese-language use, local ecosystems, enterprise rollout, and multimodal product stacks.'
+        },
+        fit: {
+          zh: '国内办公生态、中文助手、企业应用',
+          en: 'Chinese enterprise stacks, assistants, and local products'
+        },
+        why: {
+          zh: 'Doubao Seed · MiniMax M2.7 · 腾讯混元 HY 2.0 Think · ERNIE 4.5',
+          en: 'Doubao Seed · MiniMax M2.7 · Tencent Hunyuan HY 2.0 Think · ERNIE 4.5'
+        }
+      },
+      {
+        name: '中国开发者偏爱模型',
+        logo: 'https://www.google.com/s2/favicons?domain=qwenlm.ai&sz=64',
+        badges: ['cn', 'open'],
+        desc: {
+          zh: '这些模型在中国开发者圈和开源生态里非常活跃，适合编程、推理和自建工作流。',
+          en: 'These are the major Chinese developer-favorite models for coding, reasoning, and self-built workflows.'
+        },
+        fit: {
+          zh: '开发者、自建平台、开源推理、工程集成',
+          en: 'Developers, self-hosted stacks, open inference, engineering integration'
+        },
+        why: {
+          zh: 'Qwen 3.x · GLM-4.5 · DeepSeek-V3.1 · DeepSeek-R1',
+          en: 'Qwen 3.x · GLM-4.5 · DeepSeek-V3.1 · DeepSeek-R1'
+        }
+      }
+    ]
+  },
+  {
+    id: 'assistants',
+    icon: '💬',
+    accent: 'var(--blue-mid)',
+    accentBg: 'var(--blue-bg)',
+    title: { zh: '通用 AI 助手', en: 'Everyday AI Assistants' },
+    desc: {
+      zh: '日常问答、写作、翻译、头脑风暴、信息解释，适合大多数人每天打开就用。',
+      en: 'Daily Q&A, writing, translation, brainstorming, and general-purpose help for most users.'
+    },
+    chips: {
+      zh: ['日常问答', '写作润色', '翻译', '框架搭建', '中文主流工具'],
+      en: ['Everyday Q&A', 'Writing', 'Translation', 'Framework thinking', 'Mainstream Chinese tools']
+    },
+    decisions: {
+      zh: [
+        ['想要最通用、生态最全', '选 <strong>ChatGPT</strong>。'],
+        ['想要文字质感和推理感更强', '选 <strong>Claude</strong>。'],
+        ['想吃 Google 生态和多模态', '选 <strong>Gemini</strong>。'],
+        ['想要中文性价比与长文处理', '选 <strong>Kimi</strong> 或 <strong>DeepSeek</strong>。']
+      ],
+      en: [
+        ['Want the broadest general-purpose tool', 'Pick <strong>ChatGPT</strong>.'],
+        ['Want stronger writing texture and reasoning feel', 'Pick <strong>Claude</strong>.'],
+        ['Want Google ecosystem and multimodality', 'Pick <strong>Gemini</strong>.'],
+        ['Want strong Chinese value and long-context use', 'Pick <strong>Kimi</strong> or <strong>DeepSeek</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'ChatGPT', domain: 'chatgpt.com', badges: ['top'], desc: { zh: '通用能力最均衡的入口，适合写作、分析、学习、研究和轻度创作。', en: 'The broadest general-purpose entry point for writing, analysis, learning, research, and light creation.' }, fit: { zh: '大多数人的默认主力 AI', en: 'The default AI for most people' }, why: { zh: '生态完整，产品能力广，适合长期主用', en: 'Broad capabilities, mature product surface, good long-term default' } },
+      { name: 'Claude', domain: 'claude.ai', badges: ['top'], desc: { zh: '长文理解和写作质感很强，常被用于归纳、分析、报告和精修文稿。', en: 'Known for strong long-form reasoning and polished writing, often used for synthesis and reporting.' }, fit: { zh: '高质量写作、分析、结构化表达', en: 'High-quality writing, analysis, and structured expression' }, why: { zh: '文字输出稳定，适合深度内容工作', en: 'Reliable writing quality for deep content work' } },
+      { name: 'Gemini', domain: 'gemini.google.com', badges: [], desc: { zh: 'Google 体系的通用 AI 助手，适合多模态输入和一次性喂入大量材料。', en: 'Google’s general assistant, strong for multimodal inputs and handling large context windows.' }, fit: { zh: '大材料处理、Google 生态用户', en: 'Large-context work and Google ecosystem users' }, why: { zh: '大上下文、多模态、文档结合强', en: 'Large context, multimodality, strong doc handling' } },
+      { name: 'DeepSeek', domain: 'deepseek.com', badges: ['cn'], desc: { zh: '中文表现强、性价比高，很多人拿它做中文分析、代码和长文问答。', en: 'High-value Chinese-first assistant used heavily for analysis, coding, and long-form Q&A.' }, fit: { zh: '中文推理、开发者、预算敏感用户', en: 'Chinese reasoning, developers, and cost-sensitive users' }, why: { zh: '中文好用，模型口碑强，开发者友好', en: 'Strong Chinese performance and strong developer reputation' } },
+      { name: 'Kimi', domain: 'kimi.com', badges: ['cn'], desc: { zh: '很适合中文长文档阅读和快速总结，在产品、研究、运营场景里很常见。', en: 'Popular for Chinese long-document reading and quick synthesis in product and research workflows.' }, fit: { zh: '中文材料整理、竞品研究、长报告', en: 'Chinese materials, competitive research, long reports' }, why: { zh: '长文本体验好，上手快', en: 'Strong long-context experience and easy onboarding' } },
+      { name: '豆包', domain: 'doubao.com', badges: ['cn'], desc: { zh: '字节系主流 AI 助手，和飞书、内容、搜索、多模态场景有较强联动。', en: 'ByteDance’s mainstream assistant with strong connections to content, search, and productivity workflows.' }, fit: { zh: '国内用户、字节生态、日常助手', en: 'Chinese users, ByteDance ecosystem, daily assistance' }, why: { zh: '产品覆盖广，国内使用门槛低', en: 'Broad consumer reach and easy access in China' } },
+      { name: '通义千问', domain: 'tongyi.aliyun.com', badges: ['cn'], desc: { zh: '阿里系主力 AI 助手，兼顾通用问答、企业应用和开发者生态。', en: 'Alibaba’s mainstream assistant spanning consumer use, enterprise workflows, and developer adoption.' }, fit: { zh: '阿里云用户、中文办公、开发者', en: 'Alibaba Cloud users, Chinese office workflows, developers' }, why: { zh: 'Qwen 模型家族带动产品与开发两端', en: 'Strong bridge between product use and the Qwen model ecosystem' } },
+      { name: '腾讯元宝', domain: 'yuanbao.tencent.com', badges: ['cn'], desc: { zh: '腾讯系 AI 助手，适合国内办公和内容协作场景。', en: 'Tencent’s assistant for Chinese productivity and collaboration use cases.' }, fit: { zh: '腾讯生态、协作办公、轻内容', en: 'Tencent ecosystem, collaboration, and light content work' }, why: { zh: '混元能力叠加腾讯入口', en: 'Backed by Hunyuan and Tencent distribution' } },
+      { name: '智谱清言', domain: 'zhipuai.cn', badges: ['cn'], desc: { zh: '智谱面向大众的 AI 助手入口，适合中文问答、学习、办公和企业试用。', en: 'Zhipu’s consumer-facing assistant, useful for Chinese Q&A, office work, learning, and enterprise trials.' }, fit: { zh: '中文通用使用、企业了解 GLM 生态', en: 'General Chinese use and teams exploring the GLM ecosystem' }, why: { zh: '连接 GLM 模型能力与产品层', en: 'Connects the GLM model family to a usable product layer' } },
+      { name: '文心一言', domain: 'yiyan.baidu.com', badges: ['cn'], desc: { zh: '百度系通用 AI 助手，适合国内搜索、办公和企业生态。', en: 'Baidu’s mainstream assistant for search, office scenarios, and enterprise use in China.' }, fit: { zh: '百度生态、企业试用、中文办公', en: 'Baidu ecosystem, enterprise trial use, and Chinese office workflows' }, why: { zh: '文心模型与百度入口一体化', en: 'Integrated with Baidu’s ERNIE model and distribution channels' } },
+      { name: 'Microsoft Copilot', domain: 'copilot.microsoft.com', badges: ['enterprise'], desc: { zh: '微软面向个人与办公用户的通用 AI 入口，适合 Word、Excel、邮件和会议场景。', en: 'Microsoft’s general AI layer for personal and office productivity across docs, email, and meetings.' }, fit: { zh: '微软生态用户、Office 办公', en: 'Microsoft ecosystem users and Office productivity' }, why: { zh: '与 Microsoft 365 集成自然', en: 'Natural fit inside the Microsoft 365 stack' } },
+      { name: 'Grok', domain: 'grok.com', badges: ['new'], desc: { zh: '偏实时、偏互联网语境的通用助手，适合快速了解舆论和热点。', en: 'A real-time, internet-native assistant often used for commentary, trend watching, and quick takes.' }, fit: { zh: '热点讨论、实时舆情、轻研究', en: 'Trend monitoring, real-time chatter, and lightweight research' }, why: { zh: '风格鲜明，适合快节奏信息环境', en: 'Distinct style for fast-moving information environments' } }
+    ]
+  },
+  {
+    id: 'search',
+    icon: '🔎',
+    accent: 'var(--teal-mid)',
+    accentBg: 'var(--teal-bg)',
+    title: { zh: '搜索 / 深度研究 / 监测', en: 'Search / Deep Research / Monitoring' },
+    desc: {
+      zh: '适合查找最新信息、做带引用研究、监测行业变化与竞品动态。',
+      en: 'Use these for live information discovery, cited research, and market or brand monitoring.'
+    },
+    chips: {
+      zh: ['实时联网', '带来源', '行业追踪', '竞品监测'],
+      en: ['Live web', 'Citations', 'Industry tracking', 'Competitor monitoring']
+    },
+    decisions: {
+      zh: [
+        ['想最快拿到带来源回答', '用 <strong>Perplexity</strong>。'],
+        ['想做更完整的研究包', '用 <strong>Genspark</strong>。'],
+        ['想持续盯新闻和竞品', '用 <strong>Google Alerts</strong>、<strong>Brandwatch</strong>、<strong>清博</strong>。'],
+        ['想走中文搜索入口', '用 <strong>秘塔 AI 搜索</strong>。']
+      ],
+      en: [
+        ['Need a fast answer with sources', 'Use <strong>Perplexity</strong>.'],
+        ['Need a fuller research packet', 'Use <strong>Genspark</strong>.'],
+        ['Need ongoing monitoring', 'Use <strong>Google Alerts</strong>, <strong>Brandwatch</strong>, or <strong>Qingbo</strong>.'],
+        ['Need a Chinese-first research search tool', 'Use <strong>Metaso</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Perplexity', domain: 'perplexity.ai', badges: ['top'], desc: { zh: 'AI 搜索的代表产品，擅长带来源引用的实时问答与快速 research。', en: 'A leading AI search product for cited, up-to-date answers and fast research workflows.' }, fit: { zh: '行业研究、竞品扫描、实时问题', en: 'Industry research, competitor scans, and live questions' }, why: { zh: '搜索快、引用清晰、适合判断“外面发生了什么”', en: 'Fast search with clear citations and strong current-awareness' } },
+      { name: 'Genspark', domain: 'genspark.ai', badges: ['new'], desc: { zh: '更偏 agent 化研究，适合把主题自动整理成更完整的研究页面或汇总包。', en: 'A more agentic research product that organizes topics into fuller research pages and structured summaries.' }, fit: { zh: '研究包、专题梳理、资料聚合', en: 'Research packets, topic synthesis, and information aggregation' }, why: { zh: '适合从问题走向成品', en: 'Good when you want research to become a deliverable' } },
+      { name: '秘塔 AI 搜索', domain: 'metaso.cn', badges: ['cn'], desc: { zh: '中文语境下很实用的 AI 搜索产品，适合搜中文资料与国内资讯。', en: 'A practical Chinese-first AI search tool for local-language web sources and domestic information.' }, fit: { zh: '中文搜索、国内研究、新闻梳理', en: 'Chinese search, local research, and news synthesis' }, why: { zh: '中文体验友好，国内资料可达性好', en: 'Better reach into Chinese-language sources' } },
+      { name: 'Google Alerts', domain: 'google.com', badges: [], desc: { zh: '免费、轻量的关键词订阅工具，适合盯品牌、竞品和行业词。', en: 'A free lightweight alerting tool for tracking brands, competitors, and topic keywords.' }, fit: { zh: '低成本监测、关键词提醒', en: 'Low-cost monitoring and keyword alerts' }, why: { zh: '简单稳定，适合先搭基础监控', en: 'Simple and reliable for baseline monitoring' } },
+      { name: 'Brandwatch', domain: 'brandwatch.com', badges: ['enterprise'], desc: { zh: '企业级社媒与品牌舆情平台，适合国际市场监测、情绪分析和品牌追踪。', en: 'An enterprise social listening platform for market monitoring, sentiment analysis, and brand tracking.' }, fit: { zh: '品牌团队、国际市场、社媒洞察', en: 'Brand teams, global markets, and social insights' }, why: { zh: '数据维度丰富，适合专业舆情工作', en: 'Rich social datasets for professional listening work' } },
+      { name: 'Meltwater', domain: 'meltwater.com', badges: ['enterprise'], desc: { zh: '偏媒体监测和品牌 intelligence，适合 PR、传播和舆论追踪。', en: 'Focused on media intelligence and brand monitoring for PR, communications, and narrative tracking.' }, fit: { zh: '公关、传播、媒体舆情', en: 'PR, communications, and media monitoring' }, why: { zh: '适合品牌与传播团队', en: 'Strong fit for communications teams' } },
+      { name: 'Talkwalker', domain: 'talkwalker.com', badges: ['enterprise'], desc: { zh: '国际常见的社媒分析与品牌监测产品，适合持续观察口碑和声量。', en: 'A well-known global social analytics tool for tracking reputation, mentions, and conversation volume.' }, fit: { zh: '全球品牌监测、社媒分析', en: 'Global brand monitoring and social analysis' }, why: { zh: '在品牌监测领域成熟稳定', en: 'Mature and well-established in brand monitoring' } },
+      { name: '清博', domain: 'gsdata.cn', badges: ['cn'], desc: { zh: '国内常用的新媒体和舆情监测平台，适合微信、微博等中文生态追踪。', en: 'A common Chinese media-monitoring platform for WeChat, Weibo, and other domestic channels.' }, fit: { zh: '中文舆情、新媒体、品牌监测', en: 'Chinese public opinion, new media, and brand monitoring' }, why: { zh: '更贴近国内平台和语境', en: 'Closer to Chinese channels and local contexts' } }
+    ]
+  },
+  {
+    id: 'scraping',
+    icon: '🕸️',
+    accent: 'var(--slate-mid)',
+    accentBg: 'var(--slate-bg)',
+    title: { zh: '网页数据采集', en: 'Web Data Collection / AI Scraping' },
+    desc: {
+      zh: '把网站内容转成结构化数据、Markdown 或 API 结果，用于后续分析、知识库和 Agent。',
+      en: 'Convert websites into structured data, markdown, or API-ready inputs for analysis, RAG, and agents.'
+    },
+    chips: {
+      zh: ['网页转 Markdown', '结构化抓取', 'Agent 数据源', '开发者工具'],
+      en: ['Web to markdown', 'Structured extraction', 'Agent data sources', 'Developer tools']
+    },
+    decisions: {
+      zh: [
+        ['想快速把网页喂给 LLM', '用 <strong>Firecrawl</strong>。'],
+        ['想按语义批量搜网页', '用 <strong>Exa</strong>。'],
+        ['想要成熟抓取基础设施', '用 <strong>Apify</strong> 或 <strong>Bright Data</strong>。'],
+        ['想给 Agent 增加搜索能力', '用 <strong>Tavily</strong>。']
+      ],
+      en: [
+        ['Need LLM-ready website content fast', 'Use <strong>Firecrawl</strong>.'],
+        ['Need semantic web search at scale', 'Use <strong>Exa</strong>.'],
+        ['Need mature scraping infrastructure', 'Use <strong>Apify</strong> or <strong>Bright Data</strong>.'],
+        ['Need search APIs for agents', 'Use <strong>Tavily</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Firecrawl', domain: 'firecrawl.dev', badges: ['top'], desc: { zh: '把网页抓成 Markdown 或结构化内容，是“把网站变成 LLM 能读的资料”的代表工具。', en: 'A leading tool for turning websites into markdown and structured data that LLMs can actually use.' }, fit: { zh: '知识库、RAG、网页分析、自动化', en: 'Knowledge bases, RAG, web analysis, and automation' }, why: { zh: '对 AI 工作流友好，输入干净', en: 'Very AI-workflow-friendly with clean outputs' } },
+      { name: 'Exa', domain: 'exa.ai', badges: ['top', 'open'], desc: { zh: '偏语义搜索 API，适合围绕话题找高相关网页、做资料池和研究 pipeline。', en: 'A semantic search API used to discover highly relevant web pages for research pipelines and topic-based retrieval.' }, fit: { zh: '开发者、研究 API、批量网页探索', en: 'Developers, research APIs, and large-scale web exploration' }, why: { zh: '比传统关键词搜索更偏语义', en: 'More semantic than keyword-only search' } },
+      { name: 'Apify', domain: 'apify.com', badges: [], desc: { zh: '成熟的网页抓取与自动化平台，适合需要大量采集网页、社媒和电商数据的团队。', en: 'A mature scraping and automation platform for teams collecting website, social, and commerce data at scale.' }, fit: { zh: '大规模采集、爬虫团队、数据运营', en: 'Large-scale extraction, scraping teams, and data operations' }, why: { zh: '基础设施成熟，生态丰富', en: 'Mature infrastructure with a strong actor ecosystem' } },
+      { name: 'Tavily', domain: 'tavily.com', badges: ['open'], desc: { zh: '专为 AI Agent 和搜索型应用设计的搜索 API，常见于自动研究链路。', en: 'A search API built specifically for AI agents and search-centric applications.' }, fit: { zh: 'Agent、自动研究、开发集成', en: 'Agents, automated research, and developer integration' }, why: { zh: '适合让模型自己去查', en: 'Great for letting models search programmatically' } },
+      { name: 'Jina AI Reader', domain: 'jina.ai', badges: ['open'], desc: { zh: '用统一接口把网页、PDF 等内容转成更适合模型读取的文本。', en: 'Provides simple interfaces for converting web pages and PDFs into model-friendly text.' }, fit: { zh: '开发者、轻量内容提取、Agent 输入', en: 'Developers, lightweight extraction, and agent inputs' }, why: { zh: '简单直接，适合嵌入现有流程', en: 'Simple and practical for embedding into existing workflows' } },
+      { name: 'Bright Data', domain: 'brightdata.com', badges: ['enterprise'], desc: { zh: '企业级数据采集基础设施，适合复杂网页、大规模代理和合规数据项目。', en: 'Enterprise-grade data collection infrastructure for complex targets, proxy networks, and compliant large-scale scraping.' }, fit: { zh: '大规模抓取、复杂网站、企业项目', en: 'Large-scale scraping, difficult targets, and enterprise projects' }, why: { zh: '能力强，但更偏专业团队', en: 'Very powerful, but mainly for advanced teams' } }
+    ]
+  },
+  {
+    id: 'docs',
+    icon: '📚',
+    accent: 'var(--amber-mid)',
+    accentBg: 'var(--amber-bg)',
+    title: { zh: '文档型研究 / 私有资料问答', en: 'Document-Grounded Research' },
+    desc: {
+      zh: '上传你自己的访谈、报告、论文、PDF 和笔记，只基于这些材料回答问题和提炼洞察。',
+      en: 'Upload your own interviews, reports, papers, PDFs, and notes, then ask grounded questions against those sources.'
+    },
+    chips: {
+      zh: ['上传资料', '减少幻觉', '研究问答', '文档洞察'],
+      en: ['Uploaded sources', 'Lower hallucination risk', 'Research Q&A', 'Document insights']
+    },
+    decisions: {
+      zh: [
+        ['想做最稳的资料问答', '用 <strong>NotebookLM</strong>。'],
+        ['想做学术证据整理', '看 <strong>Elicit</strong> 和 <strong>Consensus</strong>。'],
+        ['想给团队做研究工作台', '看 <strong>Hebbia</strong>。'],
+        ['想在搜索里带上自己的项目资料', '用 <strong>Perplexity Spaces</strong>。']
+      ],
+      en: [
+        ['Need the cleanest grounded Q&A', 'Use <strong>NotebookLM</strong>.'],
+        ['Need evidence-first literature help', 'Look at <strong>Elicit</strong> and <strong>Consensus</strong>.'],
+        ['Need a team research workspace', 'Look at <strong>Hebbia</strong>.'],
+        ['Need project spaces inside search', 'Use <strong>Perplexity Spaces</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'NotebookLM', domain: 'notebooklm.google.com', badges: ['top'], desc: { zh: '最适合“只基于我上传的资料回答”，是用研、访谈、竞品报告和学习整理的王牌工具。', en: 'One of the best tools for answering strictly from your uploaded sources, especially for research and interview materials.' }, fit: { zh: '研究资料、访谈文稿、项目知识包', en: 'Research materials, interviews, and project knowledge packs' }, why: { zh: '来源可控，信任感强，做研究特别顺手', en: 'Grounded answers with strong source control and trust' } },
+      { name: 'Elicit', domain: 'elicit.com', badges: [], desc: { zh: '偏文献研究和证据梳理，适合需要找论文、比较结论和提炼研究摘要。', en: 'Focused on literature discovery and evidence synthesis, especially for papers and structured research review.' }, fit: { zh: '学术研究、证据综述、文献摘要', en: 'Academic research, evidence reviews, and literature summaries' }, why: { zh: '不是泛问答，而是偏研究方法', en: 'More research-method oriented than generic Q&A' } },
+      { name: 'Consensus', domain: 'consensus.app', badges: [], desc: { zh: '面向论文和研究证据的问答与总结工具，适合从学术材料里找明确结论。', en: 'A research-focused question-answering tool that helps surface conclusions from academic papers.' }, fit: { zh: '论文问题、证据查找、学术问答', en: 'Paper-driven questions and evidence lookup' }, why: { zh: '更像“研究证据搜索引擎”', en: 'Feels closer to an evidence search engine' } },
+      { name: 'Hebbia', domain: 'hebbia.com', badges: ['enterprise'], desc: { zh: '更偏专业团队研究工作台，适合法务、金融、咨询和复杂材料拆解。', en: 'A research workspace for professional teams dealing with complex documents in finance, legal, and consulting contexts.' }, fit: { zh: '专业研究团队、复杂文档任务', en: 'Professional research teams and complex document analysis' }, why: { zh: '适合高强度文档操作', en: 'Built for intensive document work' } },
+      { name: 'Perplexity Spaces', domain: 'perplexity.ai', badges: [], desc: { zh: '把搜索和项目空间结合起来，适合围绕一个主题持续积累资料和问答。', en: 'Combines search with project spaces so you can build and revisit a topic-specific research workspace.' }, fit: { zh: '项目研究空间、持续追踪', en: 'Project-based research spaces and ongoing tracking' }, why: { zh: '搜索和项目资料在一个地方', en: 'Search and project context live together' } }
+    ]
+  },
+  {
+    id: 'content',
+    icon: '✍️',
+    accent: 'var(--teal-mid)',
+    accentBg: 'var(--teal-bg)',
+    title: { zh: '写作 / 文档 / 幻灯片', en: 'Writing / Docs / Slides' },
+    desc: {
+      zh: '把分析结果变成看得见的交付物：报告、PRD、PPT、周报、提案和内容稿件。',
+      en: 'Turn thinking into deliverables: reports, PRDs, presentations, weekly updates, proposals, and content drafts.'
+    },
+    chips: {
+      zh: ['报告', 'PRD', '周报', 'PPT', '商务表达'],
+      en: ['Reports', 'PRDs', 'Weekly updates', 'Decks', 'Business communication']
+    },
+    decisions: {
+      zh: [
+        ['想一句话出 deck', '用 <strong>Gamma</strong>。'],
+        ['想继续做设计排版', '用 <strong>Canva AI</strong>。'],
+        ['文档本来就在团队知识库里', '用 <strong>Notion AI</strong> 或 <strong>Writer</strong>。'],
+        ['想做营销文案流水线', '看 <strong>Jasper</strong>、<strong>Copy.ai</strong>。']
+      ],
+      en: [
+        ['Need a deck from a prompt', 'Use <strong>Gamma</strong>.'],
+        ['Need better visual polish after drafting', 'Use <strong>Canva AI</strong>.'],
+        ['Already live inside docs and knowledge tools', 'Use <strong>Notion AI</strong> or <strong>Writer</strong>.'],
+        ['Need repeatable marketing copy workflows', 'Look at <strong>Jasper</strong> and <strong>Copy.ai</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Gamma', domain: 'gamma.app', badges: ['top'], desc: { zh: '一句话生成演示文稿和文档，是把想法快速变成“可发出去内容”的高效工具。', en: 'A fast way to turn ideas into slides and shareable documents from a prompt.' }, fit: { zh: 'PPT、汇报、提案、研究总结', en: 'Presentations, reports, proposals, and research summaries' }, why: { zh: '成稿快，适合先出结构和版本一', en: 'Very fast first draft generation' } },
+      { name: 'Canva AI', domain: 'canva.com', badges: ['top'], desc: { zh: '适合把文档进一步做成更漂亮的可视化表达，也能补图、做社媒和平面内容。', en: 'Great for turning documents into polished visual communication, with strong design and asset support.' }, fit: { zh: '视觉化报告、营销图文、演示优化', en: 'Visual reports, marketing content, and presentation polish' }, why: { zh: '设计友好，适合非设计师', en: 'Design-friendly for non-designers' } },
+      { name: 'Tome', domain: 'tome.app', badges: [], desc: { zh: '偏叙事型的演示和内容组织工具，适合讲故事式展示。', en: 'A storytelling-oriented presentation tool for narrative-style communication.' }, fit: { zh: '故事型汇报、品牌介绍、视觉叙事', en: 'Narrative decks, brand storytelling, and visual explanation' }, why: { zh: '适合讲“逻辑线”而非仅堆信息', en: 'Good for storyline-driven presentations' } },
+      { name: 'Napkin AI', domain: 'napkin.ai', badges: ['new'], desc: { zh: '把文字想法自动变成图示和结构图，适合做框架表达和概念说明。', en: 'Turns text into diagrams and structured visuals for frameworks and concept communication.' }, fit: { zh: '方法论、流程图、框架表达', en: 'Frameworks, process maps, and concept diagrams' }, why: { zh: '很适合把抽象想法画出来', en: 'Great for visualizing abstract ideas quickly' } },
+      { name: 'Beautiful.ai', domain: 'beautiful.ai', badges: [], desc: { zh: '更偏模板化和商务化的幻灯片生成，适合标准企业汇报。', en: 'A more template-driven slide tool suited to standard business presentations.' }, fit: { zh: '商务汇报、模板化 deck', en: 'Business decks and templated presentation workflows' }, why: { zh: '稳定、规整、适合公司场景', en: 'Reliable and structured for business settings' } },
+      { name: 'Notion AI', domain: 'notion.so', badges: [], desc: { zh: '直接在文档和知识库里写总结、改写、翻译和生成初稿，适合团队协作环境。', en: 'Embedded directly inside docs and knowledge spaces for summarizing, rewriting, translating, and drafting.' }, fit: { zh: '团队文档、项目记录、知识整理', en: 'Team docs, project notes, and knowledge work' }, why: { zh: '文档即工作流，切换成本低', en: 'Low-friction because it lives inside the doc workflow' } },
+      { name: 'Jasper', domain: 'jasper.ai', badges: [], desc: { zh: '老牌营销文案 AI，适合品牌和市场团队做批量内容生产。', en: 'A long-standing AI copy platform for marketing and brand teams producing content at scale.' }, fit: { zh: '营销内容、品牌文案、批量产出', en: 'Marketing content, brand copy, and scaled production' }, why: { zh: '偏营销团队而非通用助手', en: 'Built more for marketing teams than generic assistant use' } },
+      { name: 'Writer', domain: 'writer.com', badges: ['enterprise'], desc: { zh: '企业级写作和内容治理平台，强调品牌一致性、审批和合规。', en: 'An enterprise writing platform focused on governance, brand consistency, and compliance.' }, fit: { zh: '企业内容团队、品牌规范、合规写作', en: 'Enterprise content teams, brand governance, and compliant writing' }, why: { zh: '很适合组织级内容管理', en: 'Strong fit for organization-scale content control' } },
+      { name: 'Copy.ai', domain: 'copy.ai', badges: [], desc: { zh: '更偏销售和增长场景的自动内容生成，适合 outbound、邮件和营销动作。', en: 'A sales- and growth-focused content automation platform for outbound, email, and go-to-market workflows.' }, fit: { zh: '销售运营、邮件、增长内容', en: 'Sales ops, email flows, and growth content' }, why: { zh: '适合把内容生成接到业务动作上', en: 'Useful when content generation drives a business workflow' } }
+    ]
+  },
+  {
+    id: 'meetings',
+    icon: '🎙️',
+    accent: 'var(--coral-mid)',
+    accentBg: 'var(--coral-bg)',
+    title: { zh: '会议 / 转录 / 协作', en: 'Meetings / Transcription / Collaboration' },
+    desc: {
+      zh: '用来记录会议、访谈、复盘和 action items，把音频变成可检索内容。',
+      en: 'Capture meetings, interviews, and action items by turning audio into searchable text and summaries.'
+    },
+    chips: {
+      zh: ['会议纪要', '访谈转录', '行动项', '协作回顾'],
+      en: ['Meeting notes', 'Interview transcription', 'Action items', 'Collaboration']
+    },
+    decisions: {
+      zh: [
+        ['你在飞书生态里', '用 <strong>飞书妙记</strong>。'],
+        ['想要英文会议和跨平台', '用 <strong>Otter</strong> 或 <strong>Fireflies.ai</strong>。'],
+        ['想要自动摘要和 follow-up', '用 <strong>Fathom</strong> 或 <strong>Read AI</strong>。'],
+        ['想要安静记录个人会议笔记', '用 <strong>Granola</strong>。']
+      ],
+      en: [
+        ['Inside the Feishu/Lark ecosystem', 'Use <strong>Miaoji</strong>.'],
+        ['Need English meetings and broad integrations', 'Use <strong>Otter</strong> or <strong>Fireflies.ai</strong>.'],
+        ['Need summaries and follow-up automation', 'Use <strong>Fathom</strong> or <strong>Read AI</strong>.'],
+        ['Need a quiet personal note layer', 'Use <strong>Granola</strong>.']
+      ]
+    },
+    tools: [
+      { name: '飞书妙记', domain: 'feishu.cn', badges: ['top', 'cn'], desc: { zh: '飞书生态里的录音转写与摘要工具，适合访谈、评审、用研和团队复盘。', en: 'Feishu’s meeting transcription and summarization tool for interviews, reviews, and team debriefs.' }, fit: { zh: '飞书团队、访谈研究、内部会议', en: 'Feishu teams, interviews, and internal meetings' }, why: { zh: '与国内协作环境连接自然', en: 'A natural fit for Chinese collaboration workflows' } },
+      { name: 'Otter', domain: 'otter.ai', badges: [], desc: { zh: '老牌会议转录工具，适合英文会议和常见视频会议平台。', en: 'A long-standing transcription product for English meetings and mainstream video platforms.' }, fit: { zh: '英文会议、跨平台纪要', en: 'English meetings and cross-platform notes' }, why: { zh: '稳定好用，认知成本低', en: 'Reliable and easy to adopt' } },
+      { name: 'Fireflies.ai', domain: 'fireflies.ai', badges: [], desc: { zh: '自动进会、录音、总结和同步 CRM/协作工具，适合销售和跨团队会议。', en: 'Auto-joins meetings, records, summarizes, and syncs to CRM or collaboration tools.' }, fit: { zh: '销售、跨团队同步、会议自动化', en: 'Sales, cross-team sync, and meeting automation' }, why: { zh: '后续动作衔接强', en: 'Strong downstream workflow integration' } },
+      { name: 'Fathom', domain: 'fathom.video', badges: ['new'], desc: { zh: '适合快速拿到清晰会议摘要和重点片段，很多团队拿来做“会后 5 分钟回顾”。', en: 'A strong tool for fast meeting summaries and highlight clips.' }, fit: { zh: '会后快速回顾、团队同步', en: 'Post-meeting recap and team sync' }, why: { zh: '摘要清楚，适合节省回看时间', en: 'Clear summaries that reduce replay time' } },
+      { name: 'Read AI', domain: 'read.ai', badges: [], desc: { zh: '偏会议洞察与参与度分析，适合管理和协作效率场景。', en: 'More focused on meeting intelligence and participation analytics.' }, fit: { zh: '管理协作、会议健康度观察', en: 'Manager workflows and meeting effectiveness' }, why: { zh: '不只是转录，还看参与表现', en: 'Looks beyond transcripts into meeting behavior' } },
+      { name: 'Granola', domain: 'granola.ai', badges: ['new'], desc: { zh: '低打扰的 AI 会议笔记工具，适合个人轻量记录和整理。', en: 'A low-friction AI meeting note tool designed for quiet personal capture and organization.' }, fit: { zh: '个人会议笔记、轻量协作', en: 'Personal meeting notes and lightweight collaboration' }, why: { zh: '风格轻，不像重型会议系统', en: 'Feels lighter than a full meeting stack' } },
+      { name: '腾讯会议 AI', domain: 'meeting.tencent.com', badges: ['cn'], desc: { zh: '腾讯会议里的 AI 纪要能力，适合国内企业的会中记录和总结。', en: 'Tencent Meeting’s built-in AI note layer for domestic collaboration and summaries.' }, fit: { zh: '国内企业会议、腾讯生态', en: 'Chinese enterprise meetings and Tencent environments' }, why: { zh: '本地协作入口强', en: 'Strong local distribution and meeting adoption' } }
+    ]
+  },
+  {
+    id: 'images',
+    icon: '🖼️',
+    accent: 'var(--pink-mid)',
+    accentBg: 'var(--pink-bg)',
+    title: { zh: '图片 / 设计生成', en: 'Image / Design Generation' },
+    desc: {
+      zh: '适合做海报、概念图、用户画像配图、广告视觉、UI 参考和品牌创意素材。',
+      en: 'Use these for posters, concept art, persona imagery, ads, visual references, and branded creative assets.'
+    },
+    chips: {
+      zh: ['海报', '品牌视觉', '概念图', 'persona 配图', '设计素材'],
+      en: ['Posters', 'Brand visuals', 'Concept art', 'Persona imagery', 'Design assets']
+    },
+    decisions: {
+      zh: [
+        ['想要最强审美和质感', '用 <strong>Midjourney</strong>。'],
+        ['想要更贴近中文创作场景', '用 <strong>即梦</strong>。'],
+        ['想要设计流程和商业素材协同', '用 <strong>Adobe Firefly</strong>。'],
+        ['想做字效、海报和图形感', '看 <strong>Ideogram</strong> 与 <strong>Recraft</strong>。']
+      ],
+      en: [
+        ['Need the strongest visual taste', 'Use <strong>Midjourney</strong>.'],
+        ['Need a Chinese-first creative workflow', 'Use <strong>Jimeng</strong>.'],
+        ['Need design-suite integration', 'Use <strong>Adobe Firefly</strong>.'],
+        ['Need typography and graphic poster work', 'Look at <strong>Ideogram</strong> and <strong>Recraft</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Midjourney', domain: 'midjourney.com', badges: ['top'], desc: { zh: '高质感图片生成代表，适合广告感、风格探索和高审美视觉。', en: 'A leading image model for premium aesthetic output, concepting, and stylized visuals.' }, fit: { zh: '品牌图、概念图、海报、灵感图', en: 'Brand images, concept art, posters, and mood visuals' }, why: { zh: '审美强，成图“像成品”', en: 'Very strong aesthetic quality out of the box' } },
+      { name: '即梦', domain: 'jimeng.jianying.com', badges: ['cn', 'top'], desc: { zh: '字节系主流生图产品，适合中文提示词、社媒、内容和国内创作场景。', en: 'A mainstream ByteDance image tool that works well with Chinese prompts and domestic creative workflows.' }, fit: { zh: '中文创作、内容配图、社媒视觉', en: 'Chinese creative work, social visuals, and content imagery' }, why: { zh: '国内好用，门槛低，联动内容生态', en: 'Easy to use in China with strong content ecosystem links' } },
+      { name: 'Adobe Firefly', domain: 'firefly.adobe.com', badges: [], desc: { zh: '设计师友好的商业图像工具，适合和 Adobe 套件一起做品牌和营销素材。', en: 'A design-friendly commercial image tool that fits neatly into Adobe workflows.' }, fit: { zh: '商业设计、品牌素材、设计团队', en: 'Commercial design, brand assets, and design teams' }, why: { zh: '与 Photoshop / Illustrator 配合自然', en: 'Fits naturally with Photoshop and Illustrator workflows' } },
+      { name: 'Ideogram', domain: 'ideogram.ai', badges: ['new'], desc: { zh: '在海报、排版和带字视觉上很有特色，适合做标题图和宣传图。', en: 'Especially strong for posters, typography, and text-heavy visuals.' }, fit: { zh: '带字海报、封面图、营销图', en: 'Poster typography, cover images, and marketing graphics' }, why: { zh: '字效表现好', en: 'Notably good text rendering and typography feel' } },
+      { name: 'Leonardo AI', domain: 'leonardo.ai', badges: [], desc: { zh: '适合做创意资产和游戏美术方向的图片生成，也常被用于素材探索。', en: 'Commonly used for game art, creative assets, and iterative concept exploration.' }, fit: { zh: '创意素材、游戏风格、探索迭代', en: 'Creative assets, game styles, and iterative exploration' }, why: { zh: '控制项丰富，适合创作者', en: 'Flexible controls for creators' } },
+      { name: 'Recraft', domain: 'recraft.ai', badges: ['new'], desc: { zh: '更偏设计图形和品牌资产，适合图标、插图、营销图组件化输出。', en: 'Leans toward graphic design and brand assets, especially illustrations and composable marketing visuals.' }, fit: { zh: '品牌素材、插图、图形资产', en: 'Brand assets, illustrations, and graphic elements' }, why: { zh: '比“纯生图”更像设计工具', en: 'Feels more like a design tool than raw image generation' } },
+      { name: 'DALL·E', domain: 'openai.com', badges: [], desc: { zh: 'OpenAI 的图像生成能力，适合和 ChatGPT 工作流一起使用。', en: 'OpenAI’s image generation layer, especially useful inside the ChatGPT workflow.' }, fit: { zh: '聊天中做图、轻量创意产出', en: 'In-chat image creation and lightweight visual ideation' }, why: { zh: '适合把问答和作图连在一起', en: 'Convenient when image generation sits inside a broader AI workflow' } },
+      { name: 'Stable Diffusion', domain: 'stability.ai', badges: ['open'], desc: { zh: '开放生态里最有代表性的图像模型路线，适合自建和深度定制。', en: 'A foundational open image model ecosystem for local use, customization, and experimentation.' }, fit: { zh: '本地部署、模型定制、进阶玩家', en: 'Local deployment, model customization, and advanced users' }, why: { zh: '开放、可控、社区资源多', en: 'Open and highly customizable with a huge community' } },
+      { name: 'ComfyUI', domain: 'comfy.org', badges: ['open', 'local'], desc: { zh: '更像 Stable Diffusion 的工作流编排台，适合把图像生成做成可控流程。', en: 'A workflow layer for image generation that lets advanced users build modular visual pipelines.' }, fit: { zh: '高级图像工作流、节点化控制', en: 'Advanced image pipelines and node-based control' }, why: { zh: '适合想要“把生成过程拆开控制”的人', en: 'Ideal when you want fine-grained control over generation steps' } }
+    ]
+  },
+  {
+    id: 'video',
+    icon: '🎬',
+    accent: 'var(--coral-mid)',
+    accentBg: 'var(--coral-bg)',
+    title: { zh: '视频 / 语音 / 数字人 / 音乐', en: 'Video / Voice / Avatar / Music' },
+    desc: {
+      zh: '适合做短视频、角色动画、配音、数字人演示和音乐草稿。',
+      en: 'Use these for short video generation, motion, avatars, voice, narration, and music drafts.'
+    },
+    chips: {
+      zh: ['短视频', '数字人', '配音', '音乐', '多模态创作'],
+      en: ['Short video', 'Avatars', 'Voice', 'Music', 'Multimodal creation']
+    },
+    decisions: {
+      zh: [
+        ['想做高质量视频生成', '看 <strong>Runway</strong>、<strong>可灵</strong>、<strong>海螺</strong>。'],
+        ['想做会说话的人像视频', '用 <strong>HeyGen</strong>。'],
+        ['想要专业级声音', '用 <strong>ElevenLabs</strong>。'],
+        ['想做 AI 音乐草稿', '用 <strong>Suno</strong> 或 <strong>Udio</strong>。']
+      ],
+      en: [
+        ['Need strong AI video generation', 'Look at <strong>Runway</strong>, <strong>Kling</strong>, and <strong>Hailuo</strong>.'],
+        ['Need talking avatars', 'Use <strong>HeyGen</strong>.'],
+        ['Need top voice generation', 'Use <strong>ElevenLabs</strong>.'],
+        ['Need AI music drafts', 'Use <strong>Suno</strong> or <strong>Udio</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Runway', domain: 'runwayml.com', badges: ['top'], desc: { zh: '国际上最常见的视频生成与编辑平台之一，适合创意短片和营销视频。', en: 'One of the best-known AI video platforms for creative clips, social content, and editing workflows.' }, fit: { zh: '营销视频、概念短片、创意团队', en: 'Marketing videos, concept clips, and creative teams' }, why: { zh: '视频工作流成熟，全球创作者常用', en: 'Mature workflows with broad creator adoption' } },
+      { name: 'Kling 可灵', domain: 'klingai.com', badges: ['cn', 'top'], desc: { zh: '中国主流视频生成产品，适合人物动作、镜头感和中文创作环境。', en: 'A leading Chinese video generation product known for strong motion and creator appeal.' }, fit: { zh: '中文视频创作、角色镜头、短内容', en: 'Chinese video creation, character motion, and short-form content' }, why: { zh: '国内声量高，视频效果很受关注', en: 'High visibility in China with strong video output' } },
+      { name: 'MiniMax Hailuo', domain: 'hailuoai.video', badges: ['cn'], desc: { zh: 'MiniMax 的视频方向产品，适合多模态创作和国内视频实验。', en: 'MiniMax’s video-focused product for multimodal creation and Chinese-market experimentation.' }, fit: { zh: '国内视频创作、多模态内容', en: 'Chinese-market video creation and multimodal content' }, why: { zh: 'MiniMax 是必须认识的中国大模型玩家', en: 'Important because MiniMax is now a major Chinese model company' } },
+      { name: 'Pika', domain: 'pika.art', badges: ['new'], desc: { zh: '偏创意和社媒场景的视频生成产品，适合快速出实验性画面。', en: 'A creative video generation tool often used for fast social-style experiments and animated concepts.' }, fit: { zh: '实验短视频、创意表达、社媒', en: 'Experimental short clips, social content, and creative play' }, why: { zh: '轻快、上手快、适合试想法', en: 'Fast and playful for testing ideas' } },
+      { name: 'HeyGen', domain: 'heygen.com', badges: [], desc: { zh: '数字人和 AI 视频讲解很常见的选择，适合演示、培训和多语种视频。', en: 'A common choice for AI avatars and talking-head videos in training, demos, and multilingual explainers.' }, fit: { zh: '数字人讲解、培训视频、企业演示', en: 'Avatar explainers, training videos, and business demos' }, why: { zh: '数字人产品成熟', en: 'One of the more mature avatar products' } },
+      { name: 'ElevenLabs', domain: 'elevenlabs.io', badges: [], desc: { zh: '主流 AI 语音生成工具，适合配音、角色声音和多语种语音内容。', en: 'A leading AI voice tool for narration, character voices, and multilingual audio.' }, fit: { zh: '配音、播客、视频旁白、语音产品', en: 'Voiceovers, podcasts, video narration, and voice products' }, why: { zh: '声音质量高，应用面广', en: 'High-quality voice output with broad use cases' } },
+      { name: 'Suno', domain: 'suno.com', badges: [], desc: { zh: 'AI 音乐生成的主流代表，适合做 demo、灵感草稿和短内容音乐。', en: 'One of the most visible AI music tools for demos, draft tracks, and short-form content.' }, fit: { zh: '音乐草稿、短视频配乐、创意探索', en: 'Music drafts, short-video soundtracks, and creative exploration' }, why: { zh: '易用且容易快速得到成品感', en: 'Easy to use and fast to get a finished-feeling result' } },
+      { name: 'Udio', domain: 'udio.com', badges: [], desc: { zh: '另一条主流 AI 音乐路线，适合做歌曲风格探索和长一点的音乐段落。', en: 'Another major AI music product often used for style exploration and longer song segments.' }, fit: { zh: '歌曲实验、风格探索、音乐内容', en: 'Song experiments, style exploration, and music content' }, why: { zh: '与 Suno 一起构成主流音乐双核心', en: 'One of the two major mainstream AI music choices' } }
+    ]
+  },
+  {
+    id: 'coding',
+    icon: '⌘',
+    accent: 'var(--green-mid)',
+    accentBg: 'var(--green-bg)',
+    title: { zh: '编程 / 搭产品', en: 'Coding / App Building' },
+    desc: {
+      zh: '适合写代码、改项目、搭原型、做内部工具和快速生成可运行应用。',
+      en: 'Use these to write code, modify projects, prototype apps, and build internal tools quickly.'
+    },
+    chips: {
+      zh: ['IDE 辅助', 'Agent 编程', '原型产品', '低代码建站'],
+      en: ['IDE copilots', 'Coding agents', 'Product prototyping', 'App generation']
+    },
+    decisions: {
+      zh: [
+        ['想在 IDE 里边写边改', '用 <strong>Cursor</strong>。'],
+        ['想让 AI 像工程师一样动项目', '用 <strong>Claude Code</strong> 或 <strong>Codex</strong>。'],
+        ['想最快做一个能跑的 App', '用 <strong>Lovable</strong>、<strong>Bolt</strong> 或 <strong>v0</strong>。'],
+        ['已经在 GitHub / VS Code 里工作', '用 <strong>GitHub Copilot</strong>。']
+      ],
+      en: [
+        ['Need AI inside an IDE', 'Use <strong>Cursor</strong>.'],
+        ['Need an agent that can operate on a project', 'Use <strong>Claude Code</strong> or <strong>Codex</strong>.'],
+        ['Need a running app fast', 'Use <strong>Lovable</strong>, <strong>Bolt</strong>, or <strong>v0</strong>.'],
+        ['Already work inside GitHub and VS Code', 'Use <strong>GitHub Copilot</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Cursor', domain: 'cursor.com', badges: ['top'], desc: { zh: 'AI 原生 IDE，适合程序员在完整代码库里边读边改边问。', en: 'An AI-native IDE built for coding directly against a real codebase.' }, fit: { zh: '工程项目、脚本、开发日常', en: 'Engineering projects, scripts, and daily coding' }, why: { zh: '对“在 IDE 里工作”的人非常顺手', en: 'Excellent fit for people who already live inside an IDE' } },
+      { name: 'Claude Code', domain: 'anthropic.com', badges: ['top'], desc: { zh: '终端级 AI 编程工具，适合让 AI 自己读文件、改代码、跑命令。', en: 'A terminal-native coding agent that can read files, edit code, and run commands autonomously.' }, fit: { zh: '改项目、自动修复、脚本和数据管道', en: 'Project editing, automatic fixes, scripts, and data pipelines' }, why: { zh: 'Agent 感最强，适合复杂工程任务', en: 'Very agentic and strong for multi-step engineering work' } },
+      { name: 'Codex', domain: 'openai.com', badges: ['top'], desc: { zh: 'OpenAI 的 coding agent 产品，适合复杂项目、云端执行和任务式开发。', en: 'OpenAI’s coding agent product for complex project work, cloud execution, and task-based engineering.' }, fit: { zh: '复杂编程任务、Agent 开发、云端执行', en: 'Complex coding tasks, agent workflows, and cloud execution' }, why: { zh: '适合“交任务给 AI”这种工作方式', en: 'Well-suited to delegated engineering work' } },
+      { name: 'GitHub Copilot', domain: 'github.com', badges: [], desc: { zh: '最主流的 IDE 辅助编程产品之一，适合已经在 GitHub / VS Code 里工作的人。', en: 'One of the most mainstream coding copilots for users already in GitHub and VS Code.' }, fit: { zh: '补全、重构、小步开发', en: 'Autocomplete, refactors, and incremental coding' }, why: { zh: '集成深、迁移成本低', en: 'Deep integration with low switching cost' } },
+      { name: 'Windsurf', domain: 'windsurf.com', badges: [], desc: { zh: 'Codeium 路线上的 AI IDE，适合想要 Cursor 类体验的用户。', en: 'An AI IDE from the Codeium line for users who want a Cursor-like workflow.' }, fit: { zh: 'AI IDE、轻中度开发', en: 'AI IDE work and small-to-medium projects' }, why: { zh: '适合对比 Cursor 的另一条主流选择', en: 'A meaningful alternative to Cursor' } },
+      { name: 'Replit', domain: 'replit.com', badges: [], desc: { zh: '浏览器里就能写、跑、部署代码，适合原型、学习和分享。', en: 'Lets you write, run, and deploy code in the browser for prototyping, learning, and demos.' }, fit: { zh: '快速原型、教学演示、轻量项目', en: 'Fast prototypes, demos, and lightweight projects' }, why: { zh: '不用配环境，适合快速起步', en: 'Very low setup friction' } },
+      { name: 'Lovable', domain: 'lovable.dev', badges: ['new'], desc: { zh: '用自然语言直接生成完整 Web 应用，适合非程序员做内部工具和原型。', en: 'Builds complete web apps from prompts, especially useful for non-engineers creating prototypes.' }, fit: { zh: '零到一原型、内部工具、非技术团队', en: '0-to-1 prototypes, internal tools, and non-technical teams' }, why: { zh: '离“产品可用”很近', en: 'Gets surprisingly close to a usable product quickly' } },
+      { name: 'Bolt', domain: 'bolt.new', badges: ['new'], desc: { zh: '偏全栈 App 生成，适合用提示词直接拉起一个可运行项目。', en: 'A full-stack app generator for creating runnable projects directly from prompts.' }, fit: { zh: '快速应用原型、全栈脚手架', en: 'Fast app prototypes and full-stack scaffolding' }, why: { zh: '很适合把想法变成 demo', en: 'Great for turning ideas into demos quickly' } },
+      { name: 'v0', domain: 'v0.dev', badges: ['new'], desc: { zh: '更偏前端 UI 和组件生成，适合做界面草图和 React 组件起稿。', en: 'More front-end focused, especially for UI screens and React component generation.' }, fit: { zh: '前端组件、界面原型、设计转代码', en: 'Front-end components, UI prototypes, and design-to-code work' }, why: { zh: '适合先把界面搭起来', en: 'Excellent for getting the UI scaffold in place' } },
+      { name: 'Devin', domain: 'devin.ai', badges: ['enterprise', 'new'], desc: { zh: '更偏“AI 软件工程师”叙事，适合关注 Agent 编程前沿的团队。', en: 'A more autonomous software-engineer-style product for teams tracking frontier coding agents.' }, fit: { zh: 'Agent 工程、实验性团队、复杂任务', en: 'Agent engineering, experimental teams, and complex tasks' }, why: { zh: '代表一种更自动化的编程方向', en: 'Represents a more autonomous coding direction' } },
+      { name: 'Trae', domain: 'trae.ai', badges: ['cn', 'new'], desc: { zh: '国内开发者圈里值得关注的新一代 AI 编程工具，偏本土化体验。', en: 'A newer coding tool worth tracking in the Chinese developer ecosystem.' }, fit: { zh: '国内开发者、中文编程体验', en: 'Chinese developers and local-language coding workflows' }, why: { zh: '本土化产品体验更贴近中文用户', en: 'Closer fit for Chinese-language developer workflows' } }
+    ]
+  },
+  {
+    id: 'agents',
+    icon: '⚙️',
+    accent: 'var(--coral-mid)',
+    accentBg: 'var(--coral-bg)',
+    title: { zh: '工作流 / Agent 平台', en: 'Workflow / Agent Platforms' },
+    desc: {
+      zh: '把多个工具和模型串起来，做自动化流程、企业 Bot、内部 AI 应用和多步 Agent。',
+      en: 'Connect multiple tools and models into automations, AI apps, internal bots, and multi-step agents.'
+    },
+    chips: {
+      zh: ['多步流程', '自动化', 'AI Bot', '企业 AI 应用', 'Agent 平台'],
+      en: ['Multi-step flows', 'Automation', 'AI bots', 'Internal AI apps', 'Agent platforms']
+    },
+    decisions: {
+      zh: [
+        ['只想简单串几个 SaaS', '用 <strong>Zapier</strong>。'],
+        ['想做复杂流程、可自托管', '用 <strong>n8n</strong>。'],
+        ['想做国内 Bot 和飞书链路', '用 <strong>Coze</strong>。'],
+        ['想做企业知识库助手或 AI 应用', '用 <strong>Dify</strong>。']
+      ],
+      en: [
+        ['Need simple SaaS automations', 'Use <strong>Zapier</strong>.'],
+        ['Need flexible, self-hostable workflows', 'Use <strong>n8n</strong>.'],
+        ['Need Chinese bot workflows', 'Use <strong>Coze</strong>.'],
+        ['Need internal AI apps or RAG assistants', 'Use <strong>Dify</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'n8n', domain: 'n8n.io', badges: ['top', 'open'], desc: { zh: '最灵活的工作流自动化平台之一，适合把抓取、分析、推送、审批串成完整流程。', en: 'One of the most flexible workflow automation tools for connecting scrape-analyze-publish pipelines.' }, fit: { zh: '复杂流程、技术团队、自托管', en: 'Complex workflows, technical teams, and self-hosting' }, why: { zh: '灵活度高，适合认真做自动化', en: 'Very flexible for serious workflow design' } },
+      { name: 'Zapier', domain: 'zapier.com', badges: ['top'], desc: { zh: '最好上手的 SaaS 自动化工具，适合邮箱、表单、文档、通知等轻流程。', en: 'The easiest SaaS automation tool for simple triggers and app connections.' }, fit: { zh: '非技术用户、轻量自动化、SaaS 串联', en: 'Non-technical users, light automations, and SaaS chaining' }, why: { zh: '上手最快，适合先跑通业务', en: 'Fastest way to get a workflow working' } },
+      { name: 'Make', domain: 'make.com', badges: [], desc: { zh: '介于 Zapier 和 n8n 之间，适合可视化流程设计和中等复杂度自动化。', en: 'A middle ground between Zapier and n8n for visual flow-building with moderate complexity.' }, fit: { zh: '中等复杂流程、可视化自动化', en: 'Moderate complexity workflows and visual automation' }, why: { zh: '平衡易用性和灵活度', en: 'Balances usability and flexibility' } },
+      { name: 'Coze 扣子', domain: 'coze.cn', badges: ['cn'], desc: { zh: '国内常见的 AI Bot 与 Agent 平台，适合做飞书、微信、内容分发和助理类工具。', en: 'A mainstream Chinese bot and agent platform for Feishu, WeChat, and assistant-style apps.' }, fit: { zh: '国内 Bot、飞书链路、行业助手', en: 'Chinese bots, Feishu-linked workflows, and industry assistants' }, why: { zh: '国内生态适配强', en: 'Strong fit for Chinese ecosystems' } },
+      { name: 'Dify', domain: 'dify.ai', badges: ['open'], desc: { zh: '主流开源 AI 应用平台，适合企业知识库助手、流程型 AI 应用和私有部署。', en: 'A popular open AI app platform used for internal assistants, workflow apps, and private deployment.' }, fit: { zh: '企业 AI 应用、RAG、私有化', en: 'Enterprise AI apps, RAG, and private deployment' }, why: { zh: '把产品化和技术栈连接起来', en: 'Good bridge between product teams and engineering stacks' } },
+      { name: 'LangGraph', domain: 'langchain.com', badges: ['open'], desc: { zh: '偏开发框架，适合构建状态复杂、多步骤、多 Agent 协作系统。', en: 'A developer framework for building complex multi-step and multi-agent systems.' }, fit: { zh: '开发团队、复杂 Agent、生产系统', en: 'Engineering teams, complex agents, and production systems' }, why: { zh: '更像基础设施，不是即开即用产品', en: 'More infrastructure than end-user product' } },
+      { name: 'Gumloop', domain: 'gumloop.com', badges: ['new'], desc: { zh: '新一代 AI-native 自动化平台，适合不用太多代码也想做 Agent 工作流的人。', en: 'A newer AI-native automation platform for building agent workflows with less engineering overhead.' }, fit: { zh: '中等复杂流程、AI-first 自动化', en: 'Medium-complexity AI-first workflows' }, why: { zh: '比传统自动化平台更懂 AI 场景', en: 'More tuned to AI use cases than older automation tools' } },
+      { name: 'Lindy', domain: 'lindy.ai', badges: ['new'], desc: { zh: '偏个人和团队助理自动化，适合把邮件、日历、跟进和文档串起来。', en: 'An assistant-style automation product for email, calendar, follow-up, and lightweight task orchestration.' }, fit: { zh: '个人助理、运营流程、轻团队自动化', en: 'Personal assistant workflows and lightweight team automation' }, why: { zh: '更像“AI 执行秘书”', en: 'Feels more like an AI executive assistant' } },
+      { name: 'Manus', domain: 'manus.im', badges: ['cn', 'new'], desc: { zh: '面向复杂任务代理的代表产品之一，适合关注“把任务直接交给 Agent”的新工作方式。', en: 'A notable task-agent product for people exploring delegated work through autonomous agents.' }, fit: { zh: '复杂任务代理、实验性工作流', en: 'Autonomous task execution and experimental workflows' }, why: { zh: '代表 Agent 产品化方向', en: 'Represents the productization of autonomous agents' } },
+      { name: 'Hermes Agent', domain: 'hermesagent.ai', badges: ['new'], desc: { zh: '值得纳入版图的新型 Agent 平台，适合观察 agentic workflow 的产品演化。', en: 'A newer agent platform worth tracking if you want the broader agent workflow landscape represented.' }, fit: { zh: 'Agent 选型、前沿观察、任务自动化', en: 'Agent selection, frontier tracking, and task automation' }, why: { zh: '适合作为新一代 Agent 类产品的参考点', en: 'Useful as a reference point for emerging agent platforms' } },
+      { name: 'Flowise', domain: 'flowiseai.com', badges: ['open'], desc: { zh: '偏可视化编排的开源 LLM 工作流工具，适合快速搭建 demo 和内部流程。', en: 'An open visual orchestration tool for quickly building LLM demos and internal workflows.' }, fit: { zh: '可视化编排、内部 demo、开发试验', en: 'Visual orchestration, internal demos, and experimentation' }, why: { zh: '轻量、开源、适合试原型', en: 'Lightweight, open, and good for prototyping' } },
+      { name: 'CrewAI', domain: 'crewai.com', badges: ['open'], desc: { zh: '多 Agent 协作框架代表，适合把角色分工明确地交给不同 agent。', en: 'A well-known multi-agent framework for role-based collaboration between agents.' }, fit: { zh: '多 Agent 设计、开发试验', en: 'Multi-agent design and engineering experiments' }, why: { zh: '适合学习“多角色 Agent”思路', en: 'Helpful when exploring role-based agent design' } },
+      { name: 'AutoGen', domain: 'microsoft.com', badges: ['open'], desc: { zh: '微软开源的多 Agent 框架，适合学术和工程团队搭建协作型 Agent。', en: 'Microsoft’s open multi-agent framework for research and engineering teams.' }, fit: { zh: '研究、多 Agent 系统、开发', en: 'Research, multi-agent systems, and development' }, why: { zh: '在多 Agent 工程范式里影响大', en: 'A major influence in multi-agent engineering patterns' } }
+    ]
+  },
+  {
+    id: 'knowledge',
+    icon: '🗂️',
+    accent: 'var(--amber-mid)',
+    accentBg: 'var(--amber-bg)',
+    title: { zh: '知识库 / 第二大脑 / 企业搜索', en: 'Knowledge Base / Second Brain / Enterprise Search' },
+    desc: {
+      zh: '用来长期沉淀、组织和检索研究、笔记、文档与内部知识。',
+      en: 'Use these to store, organize, and retrieve long-term knowledge across notes, docs, and internal information.'
+    },
+    chips: {
+      zh: ['知识沉淀', '个人笔记', '团队知识库', '企业搜索'],
+      en: ['Knowledge capture', 'Personal notes', 'Team repositories', 'Enterprise search']
+    },
+    decisions: {
+      zh: [
+        ['想做个人本地知识库', '用 <strong>Obsidian</strong>。'],
+        ['想做团队共享知识入口', '用 <strong>飞书知识库</strong> 或 <strong>Glean</strong>。'],
+        ['想做自动关联的第二大脑', '看 <strong>Mem.ai</strong>、<strong>Tana</strong>、<strong>Capacities</strong>。'],
+        ['想把读过的内容回收到知识系统', '用 <strong>Readwise Reader</strong>。']
+      ],
+      en: [
+        ['Need a personal local knowledge system', 'Use <strong>Obsidian</strong>.'],
+        ['Need a team knowledge layer', 'Use <strong>Feishu Wiki</strong> or <strong>Glean</strong>.'],
+        ['Need a connected second-brain style tool', 'Look at <strong>Mem.ai</strong>, <strong>Tana</strong>, and <strong>Capacities</strong>.'],
+        ['Need to capture and revisit what you read', 'Use <strong>Readwise Reader</strong>.']
+      ]
+    },
+    tools: [
+      { name: 'Obsidian', domain: 'obsidian.md', badges: ['top', 'local'], desc: { zh: '本地化知识管理代表，适合搭建长期、可控、个人化的研究资料库。', en: 'A flagship local knowledge tool for building a long-term and highly controllable personal research base.' }, fit: { zh: '个人知识库、方法论沉淀、本地笔记', en: 'Personal knowledge systems, methods, and local notes' }, why: { zh: '可控性强，适合认真整理知识的人', en: 'Very flexible and powerful for serious personal knowledge work' } },
+      { name: '飞书知识库', domain: 'feishu.cn', badges: ['cn'], desc: { zh: '飞书团队共享知识的主入口，适合研究仓库、项目文档和组织协作。', en: 'Feishu’s team knowledge layer for project docs, research repositories, and shared collaboration.' }, fit: { zh: '团队知识库、项目归档、组织协作', en: 'Team knowledge bases, project archives, and collaboration' }, why: { zh: '在国内团队协作环境里很实用', en: 'A practical fit for Chinese teamwork environments' } },
+      { name: 'Glean', domain: 'glean.com', badges: ['enterprise'], desc: { zh: '企业级内部搜索和知识入口，连接 Slack、Drive、Confluence、Jira 等系统。', en: 'An enterprise search layer connecting Slack, Drive, Confluence, Jira, and more.' }, fit: { zh: '企业搜索、跨工具内部知识', en: 'Enterprise search and cross-tool internal knowledge' }, why: { zh: '适合“公司知识分散在很多系统里”', en: 'Excellent when knowledge is fragmented across many enterprise tools' } },
+      { name: 'Mem.ai', domain: 'mem.ai', badges: [], desc: { zh: '自动关联笔记和上下文的 AI 笔记产品，适合轻量 second brain。', en: 'An AI note system focused on connected context and lightweight second-brain use.' }, fit: { zh: '轻量知识管理、自动关联笔记', en: 'Lightweight knowledge management and linked notes' }, why: { zh: '强调“帮你连起来”而非手动组织', en: 'Emphasizes automatic connection over manual organization' } },
+      { name: 'Heptabase', domain: 'heptabase.com', badges: [], desc: { zh: '可视化卡片式知识整理工具，适合把复杂主题慢慢拆开理解。', en: 'A visual card-based knowledge tool for breaking down and understanding complex topics.' }, fit: { zh: '复杂主题学习、视觉化整理', en: 'Complex-topic learning and visual organization' }, why: { zh: '很适合思考型和研究型工作', en: 'Especially good for conceptual and research-heavy thinking' } },
+      { name: 'Tana', domain: 'tana.inc', badges: ['new'], desc: { zh: '偏结构化与图谱化的知识工具，适合系统性整理资料和流程。', en: 'A structured knowledge tool suited to graph-like organization and systems thinking.' }, fit: { zh: '结构化知识、系统设计、长期积累', en: 'Structured knowledge, systems design, and long-term accumulation' }, why: { zh: '适合把知识当系统来搭', en: 'Well-suited to building knowledge as a system' } },
+      { name: 'Capacities', domain: 'capacities.io', badges: ['new'], desc: { zh: '更偏对象化知识管理，适合喜欢按人物、项目、概念来组织信息的人。', en: 'An object-based knowledge tool for people who organize around entities like people, projects, and concepts.' }, fit: { zh: '对象化知识、研究资料管理', en: 'Object-based knowledge and research organization' }, why: { zh: '组织方式很清晰', en: 'A clear and modern information model' } },
+      { name: 'Readwise Reader', domain: 'readwise.io', badges: [], desc: { zh: '把文章、网页、PDF 和高亮统一收进一个阅读回收站，适合长期阅读知识流。', en: 'Collects articles, web pages, PDFs, and highlights into a long-term reading workflow.' }, fit: { zh: '阅读回收、资料归档、知识输入', en: 'Reading capture, archival, and knowledge intake' }, why: { zh: '很适合把“看过的东西”留下来', en: 'Excellent for keeping what you consume retrievable' } }
+    ]
+  }
+];
+
+const overviewSummary = {
+  models: {
+    zh: '先看底层能力：旗舰、开源、中国模型。',
+    en: 'Model layer: flagship, open, and Chinese stacks.',
+    picks: 'GPT-5.4 / Claude Opus 4.6 / Gemini 3.1 Pro'
+  },
+  assistants: {
+    zh: '日常问答、写作、翻译、思考辅助。',
+    en: 'Daily Q&A, writing, translation, and thinking support.',
+    picks: 'ChatGPT / Claude / Gemini / Kimi'
+  },
+  search: {
+    zh: '找最新信息、做带来源研究、盯行业动态。',
+    en: 'Live search, cited research, and market tracking.',
+    picks: 'Perplexity / Genspark / 秘塔'
+  },
+  scraping: {
+    zh: '把网页变成可分析、可喂模型的数据。',
+    en: 'Turn websites into model-ready and structured data.',
+    picks: 'Firecrawl / Exa / Apify'
+  },
+  docs: {
+    zh: '只基于你的资料做问答和研究。',
+    en: 'Grounded Q&A and research on your own files.',
+    picks: 'NotebookLM / Elicit / Consensus'
+  },
+  content: {
+    zh: '把想法做成报告、PRD、PPT 和对外材料。',
+    en: 'Turn ideas into reports, PRDs, decks, and polished docs.',
+    picks: 'Gamma / Canva AI / Notion AI'
+  },
+  meetings: {
+    zh: '记录会议、访谈、纪要和行动项。',
+    en: 'Capture meetings, interviews, summaries, and action items.',
+    picks: '飞书妙记 / Otter / Fireflies.ai'
+  },
+  images: {
+    zh: '做海报、概念图、品牌视觉和配图。',
+    en: 'Create posters, concept art, and branded visuals.',
+    picks: 'Midjourney / 即梦 / Adobe Firefly'
+  },
+  video: {
+    zh: '做视频、配音、数字人和音乐草稿。',
+    en: 'Generate video, voice, avatars, and music drafts.',
+    picks: 'Runway / 可灵 / Hailuo / ElevenLabs'
+  },
+  coding: {
+    zh: '写代码、改项目、搭原型和小工具。',
+    en: 'Code, modify projects, prototype apps, and build tools.',
+    picks: 'Cursor / Claude Code / Codex'
+  },
+  agents: {
+    zh: '把多个步骤串成自动化和 AI 应用。',
+    en: 'Connect steps into automations, bots, and AI apps.',
+    picks: 'n8n / Zapier / Dify / Coze'
+  },
+  knowledge: {
+    zh: '沉淀个人和团队知识，方便长期复用。',
+    en: 'Store personal and team knowledge for long-term reuse.',
+    picks: 'Obsidian / 飞书知识库 / Glean'
+  }
+};
+
+const homeText = {
+  zh: {
+    heroTitle: '使用方式',
+    heroBody: '先用下面的选择器缩小范围；如果你已经知道自己想看哪一类，直接用上方导航进入对应分类。',
+    selectorTitle: '先让选择器帮你缩小市场',
+    selectorSub: '选几个属性，首页只先推荐更值得优先看的工具。',
+    clearFilters: '重置',
+    selectorHint: '选好后再查看推荐，首页会更清楚一些。',
+    applyFilters: '查看推荐',
+    resultsTitle: '推荐工具',
+    resultsSummaryDefault: '选好条件后，点击“查看推荐”再显示结果。',
+    resultsSummaryCount: '根据你的选择，这里是更值得先看的 {count} 个工具。',
+    noResults: '这组条件下暂时没有特别强的匹配，可以放宽一个条件，或者直接用顶部分类导航浏览全部工具。',
+    quickSubtitle: '这些是大多数人第一次选 AI 时最常遇到的入口。',
+    featuredTitle: '从常见入口开始',
+    featuredSub: '如果你只是想先知道“现在该点哪个 AI”，先看这几条主路线。',
+    taxonomyTitle: '完整分类表',
+    taxonomySub: '当你已经知道任务方向，再用这张表快速定位更细的工具带。',
+    quickTitle: '四种最常见起点',
+    groups: {
+      task: '我现在要做什么？',
+      source: '信息从哪里来',
+      output: '我需要什么产出',
+      language: '语言 / 场景'
+    },
+    options: {
+      all: '不限',
+      live_info: '看最新信息',
+      own_docs: '看我的材料',
+      write_report: '写报告 / PPT',
+      make_visuals: '做图 / 视频',
+      code_tool: '写代码 / 搭工具',
+      automate: '跑自动化',
+      live_web: '实时网络',
+      uploaded_files: '我的文档 / PDF',
+      model_knowledge: '模型本身',
+      team_knowledge: '团队知识',
+      answer: '问答 / 总结',
+      report: '报告 / 幻灯片',
+      visuals: '图片 / 视频',
+      code: '代码 / App',
+      workflow: '流程 / Bot',
+      chinese: '中文优先',
+      global: '全球主流',
+      enterprise: '团队 / 企业'
+    }
+  },
+  en: {
+    heroTitle: 'How To Use This',
+    heroBody: 'Use the selector below to narrow the field first. If you already know the category you want, jump in from the top navigation.',
+    selectorTitle: 'Let the selector narrow the market first',
+    selectorSub: 'Pick a few attributes and the homepage will surface the tools most worth checking first.',
+    clearFilters: 'Reset',
+    selectorHint: 'Choose your filters first, then reveal recommendations.',
+    applyFilters: 'Show recommendations',
+    resultsTitle: 'Recommended Tools',
+    resultsSummaryDefault: 'Pick your filters, then click “Show recommendations” to reveal results.',
+    resultsSummaryCount: 'Based on your choices, these are the {count} tools most worth looking at first.',
+    noResults: 'There is no especially strong match for this exact combination yet. Loosen one filter or browse the categories from the top navigation.',
+    quickSubtitle: 'These are the most common places people usually start.',
+    featuredTitle: 'Start with common routes',
+    featuredSub: 'If you just want to know which AI to try first, begin with these main lanes.',
+    taxonomyTitle: 'Full Taxonomy',
+    taxonomySub: 'Once you know the task direction, use this table to zoom into the right tool lane.',
+    quickTitle: 'Four common starting points',
+    groups: {
+      task: 'What are you trying to do?',
+      source: 'Where should the answer come from?',
+      output: 'What do you want as output?',
+      language: 'Language / context'
+    },
+    options: {
+      all: 'Any',
+      live_info: 'Live information',
+      own_docs: 'My documents',
+      write_report: 'Report / slides',
+      make_visuals: 'Images / video',
+      code_tool: 'Code / build tools',
+      automate: 'Automation',
+      live_web: 'Live web',
+      uploaded_files: 'My files / PDFs',
+      model_knowledge: 'Model knowledge',
+      team_knowledge: 'Team knowledge',
+      answer: 'Answer / summary',
+      report: 'Report / deck',
+      visuals: 'Images / video',
+      code: 'Code / app',
+      workflow: 'Workflow / bot',
+      chinese: 'Chinese-first',
+      global: 'Global mainstream',
+      enterprise: 'Team / enterprise'
+    }
+  }
+};
+
+const selectorConfig = [
+  { id: 'task', options: ['all', 'live_info', 'own_docs', 'write_report', 'make_visuals', 'code_tool', 'automate'] },
+  { id: 'source', options: ['all', 'live_web', 'uploaded_files', 'model_knowledge', 'team_knowledge'] },
+  { id: 'output', options: ['all', 'answer', 'report', 'visuals', 'code', 'workflow'] },
+  { id: 'language', options: ['all', 'chinese', 'global', 'enterprise'] }
+];
+
+const toolRecommendations = [
+  { name: 'ChatGPT', domain: 'chatgpt.com', category: 'assistants', task: ['live_info', 'write_report'], source: ['model_knowledge', 'live_web'], output: ['answer', 'report'], language: ['global'], desc: { zh: '最通用的默认入口，适合日常问答、写作和研究打底。', en: 'The broadest default entry point for everyday Q&A, writing, and general research.' }, why: { zh: '如果你不确定从哪一个开始，它很少会错。', en: 'A very safe first stop when you are not sure where to begin.' } },
+  { name: 'Claude', domain: 'claude.ai', category: 'assistants', task: ['write_report', 'own_docs'], source: ['model_knowledge', 'uploaded_files'], output: ['answer', 'report'], language: ['global'], desc: { zh: '长文写作和归纳提炼特别强，适合把材料变成清楚表达。', en: 'Especially strong for long-form writing, synthesis, and turning messy material into clear expression.' }, why: { zh: '适合报告、邮件、框架表达。', en: 'A strong choice for reports, memos, and structured reasoning.' } },
+  { name: 'Perplexity', domain: 'perplexity.ai', category: 'search', task: ['live_info'], source: ['live_web'], output: ['answer', 'report'], language: ['global'], desc: { zh: '看最新信息最快的入口，搜索和引用都很直接。', en: 'One of the fastest ways to get live information with sources and citations.' }, why: { zh: '特别适合“外面现在发生了什么”。', en: 'Especially good for “what is happening right now?” questions.' } },
+  { name: 'Genspark', domain: 'genspark.ai', category: 'search', task: ['live_info', 'write_report'], source: ['live_web'], output: ['answer', 'report'], language: ['global'], desc: { zh: '更像把搜索做成研究包，适合专题整理。', en: 'More like turning search into a research packet or topic brief.' }, why: { zh: '想把研究直接做成成品时很合适。', en: 'A good fit when you want research to become a deliverable quickly.' } },
+  { name: 'NotebookLM', domain: 'notebooklm.google.com', category: 'docs', task: ['own_docs'], source: ['uploaded_files'], output: ['answer', 'report'], language: ['global'], desc: { zh: '最适合“只基于我的文档回答”的入口。', en: 'One of the clearest tools for answering only from your own uploaded files.' }, why: { zh: '访谈稿、PDF、研究材料在这类场景里很顺。', en: 'Excellent for interviews, PDFs, and research packs.' } },
+  { name: 'Gamma', domain: 'gamma.app', category: 'content', task: ['write_report'], source: ['model_knowledge', 'uploaded_files'], output: ['report'], language: ['global'], desc: { zh: '把想法和材料快速变成 PPT 或文档。', en: 'Turns ideas and material into a deck or document very quickly.' }, why: { zh: '如果你要的是可发出去的版本，它很快。', en: 'Great when the output needs to look presentable fast.' } },
+  { name: 'Canva AI', domain: 'canva.com', category: 'content', task: ['write_report', 'make_visuals'], source: ['model_knowledge'], output: ['report', 'visuals'], language: ['global'], desc: { zh: '适合把报告、演示和视觉表达一起做清楚。', en: 'Good for combining reports, presentations, and visual polish in one place.' }, why: { zh: '非设计师也可以做出比较稳的视觉效果。', en: 'A practical way to make polished visuals without being a designer.' } },
+  { name: 'Midjourney', domain: 'midjourney.com', category: 'images', task: ['make_visuals'], source: ['model_knowledge'], output: ['visuals'], language: ['global'], desc: { zh: '更偏高质感图片和品牌视觉。', en: 'Best known for premium-looking imagery and aesthetic visual generation.' }, why: { zh: '想要图片有“成品感”时，常常先看它。', en: 'A strong first stop when you need images that already feel polished.' } },
+  { name: '即梦', domain: 'jimeng.jianying.com', category: 'images', task: ['make_visuals'], source: ['model_knowledge'], output: ['visuals'], language: ['chinese'], desc: { zh: '中文生图场景里很主流，适合国内内容和社媒画面。', en: 'A mainstream Chinese image tool for social, content, and domestic creative workflows.' }, why: { zh: '中文提示词和国内内容语境更贴合。', en: 'A better fit for Chinese prompts and local creative contexts.' } },
+  { name: 'Runway', domain: 'runwayml.com', category: 'video', task: ['make_visuals'], source: ['model_knowledge'], output: ['visuals'], language: ['global'], desc: { zh: '做短视频和创意画面比较常见的主流选择。', en: 'A mainstream choice for creative AI video and short-form visual generation.' }, why: { zh: '如果你想做动的内容，它是很好的入口。', en: 'A solid entry point when you need moving visuals rather than still images.' } },
+  { name: 'Kling 可灵', domain: 'klingai.com', category: 'video', task: ['make_visuals'], source: ['model_knowledge'], output: ['visuals'], language: ['chinese'], desc: { zh: '国内视频生成里非常主流的一条路线。', en: 'A very mainstream Chinese route for AI video generation.' }, why: { zh: '如果你要做中文语境的 AI 视频，很值得先看。', en: 'Well worth checking first for Chinese-language video workflows.' } },
+  { name: 'Cursor', domain: 'cursor.com', category: 'coding', task: ['code_tool'], source: ['model_knowledge'], output: ['code'], language: ['global'], desc: { zh: '如果你是在 IDE 里边写边改，它是最主流的入口之一。', en: 'One of the main default choices if you want AI inside an IDE.' }, why: { zh: '适合用代码库上下文来写、改、查。', en: 'Strong when you want codebase-aware editing and iteration.' } },
+  { name: 'Claude Code', domain: 'anthropic.com', category: 'coding', task: ['code_tool', 'automate'], source: ['model_knowledge'], output: ['code', 'workflow'], language: ['global'], desc: { zh: '更像一个会动项目的 AI 编程助手。', en: 'Feels more like a coding agent that can operate on a project.' }, why: { zh: '如果你想让 AI 自己去读文件、改代码、跑命令，它很合适。', en: 'Good when you want the AI to read files, edit code, and run commands.' } },
+  { name: 'Codex', domain: 'openai.com', category: 'coding', task: ['code_tool', 'automate'], source: ['model_knowledge'], output: ['code', 'workflow'], language: ['global'], desc: { zh: 'OpenAI 的 coding-agent 路线，适合任务式编程。', en: 'OpenAI’s coding-agent route, useful for delegated engineering tasks.' }, why: { zh: '适合想把一个更完整的编程任务交给 AI。', en: 'A good fit when you want to hand off a larger programming task.' } },
+  { name: 'n8n', domain: 'n8n.io', category: 'agents', task: ['automate'], source: ['live_web', 'uploaded_files', 'team_knowledge'], output: ['workflow'], language: ['enterprise', 'global'], desc: { zh: '把多个步骤串成流程的主流工具，适合认真做自动化。', en: 'A mainstream way to connect many steps into a real workflow or automation.' }, why: { zh: '适合把抓取、分析、推送、审批都串起来。', en: 'Great for connecting scrape, analyze, publish, and follow-up steps.' } },
+  { name: 'Zapier', domain: 'zapier.com', category: 'agents', task: ['automate'], source: ['live_web', 'team_knowledge'], output: ['workflow'], language: ['global'], desc: { zh: '最好上手的轻量自动化工具，适合非技术用户。', en: 'The easiest lightweight automation tool for non-technical users.' }, why: { zh: '如果你只是想把两三个工具串起来，它很快。', en: 'Ideal when you just want to connect a few tools quickly.' } },
+  { name: 'Dify', domain: 'dify.ai', category: 'agents', task: ['automate', 'own_docs'], source: ['uploaded_files', 'team_knowledge'], output: ['workflow', 'answer'], language: ['enterprise', 'global'], desc: { zh: '偏做内部 AI 应用和知识库助手，适合团队使用。', en: 'More focused on internal AI apps and knowledge assistants for teams.' }, why: { zh: '如果你想搭团队用的 AI 助手，它很值得先看。', en: 'Worth checking first when the end goal is a team-facing AI assistant.' } },
+  { name: 'Coze 扣子', domain: 'coze.cn', category: 'agents', task: ['automate'], source: ['live_web', 'team_knowledge'], output: ['workflow'], language: ['chinese'], desc: { zh: '国内 Bot 和 Agent 场景里很常见的入口。', en: 'A common entry point for bots and agents in Chinese ecosystems.' }, why: { zh: '如果你要做飞书、微信、国内内容路线，它比较顺。', en: 'A good fit for Feishu, WeChat, and China-specific workflow routes.' } }
+];
+
+function favicon(domain) {
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+}
+
+for (const category of categories) {
+  for (const tool of category.tools) {
+    if (!tool.logo) tool.logo = favicon(tool.domain);
+  }
+}
+
+let currentLang = 'zh';
+const featuredOverviewIds = ['assistants', 'search', 'docs', 'content', 'coding', 'agents'];
+let currentFilters = { task: 'all', source: 'all', output: 'all', language: 'all' };
+let hasAppliedFilters = false;
+
+function t(value) {
+  if (!value) return '';
+  return typeof value === 'string' ? value : value[currentLang];
+}
+
+function badgeClass(type) {
+  const map = {
+    top: 'badge-top',
+    cn: 'badge-cn',
+    open: 'badge-open',
+    enterprise: 'badge-enterprise',
+    new: 'badge-new',
+    local: 'badge-local'
+  };
+  return map[type] || 'badge-local';
+}
+
+function badgeLabel(type) {
+  const labels = {
+    zh: {
+      top: '推荐',
+      cn: '中文',
+      open: '开放',
+      enterprise: '企业',
+      new: '新兴',
+      local: '本地'
+    },
+    en: {
+      top: 'Top Pick',
+      cn: 'China',
+      open: 'Open',
+      enterprise: 'Enterprise',
+      new: 'New',
+      local: 'Local'
+    }
+  };
+  return labels[currentLang][type] || type;
+}
+
+function toolCard(tool, accent) {
+  const badges = (tool.badges || []).map(tag =>
+    `<span class="badge ${badgeClass(tag)}">${badgeLabel(tag)}</span>`
+  ).join('');
+  return `
+    <div class="tool-card" style="--accent:${accent}">
+      <div class="tool-top">
+        <div class="tool-id">
+          <img class="tool-logo" src="${tool.logo}" alt="${tool.name} logo" loading="lazy" referrerpolicy="no-referrer">
+          <div class="tool-name">${tool.name}</div>
+        </div>
+        <div class="tool-badges">${badges}</div>
+      </div>
+      <div class="tool-desc">${t(tool.desc)}</div>
+      <div class="tool-detail">
+        <div class="detail-row">
+          <div class="detail-label">${uiText[currentLang].detailFit}</div>
+          <div class="detail-val">${t(tool.fit)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">${uiText[currentLang].detailWhy}</div>
+          <div class="detail-val">${t(tool.why)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderOverview() {
+  const grid = document.getElementById('overview-grid');
+  const featured = categories.filter(cat => featuredOverviewIds.includes(cat.id));
+  grid.innerHTML = featured.map(cat => `
+    <div class="overview-card" style="--accent:${cat.accent};--accent-bg:${cat.accentBg}" onclick="switchTab('${cat.id}')">
+      <div class="overview-icon">${cat.icon}</div>
+      <div class="overview-text">
+        <div class="overview-name">${t(cat.title)}</div>
+        <div class="overview-sub">${overviewSummary[cat.id][currentLang]}</div>
+      </div>
+      <div class="overview-count">${cat.tools.length} ${uiText[currentLang].toolCount}</div>
+    </div>
+  `).join('');
+}
+
+function renderOverviewTable() {
+  document.getElementById('overview-panel-title').textContent = homeText[currentLang].taxonomyTitle;
+  document.getElementById('overview-panel-sub').textContent = homeText[currentLang].taxonomySub;
+  document.getElementById('overview-head-1').textContent = uiText[currentLang].overviewHead1;
+  document.getElementById('overview-head-2').textContent = uiText[currentLang].overviewHead2;
+  document.getElementById('overview-head-3').textContent = uiText[currentLang].overviewHead3;
+  document.getElementById('overview-table-body').innerHTML = categories.map(cat => `
+    <tr>
+      <td>
+        <div class="overview-row-cat" style="--accent:${cat.accent}">
+          <span class="overview-row-dot"></span>
+          <span class="overview-row-name">${t(cat.title)}</span>
+        </div>
+      </td>
+      <td class="overview-row-desc">${overviewSummary[cat.id][currentLang]}</td>
+      <td class="overview-row-picks">${overviewSummary[cat.id].picks}</td>
+    </tr>
+  `).join('');
+}
+
+function renderSelector() {
+  document.getElementById('selector-title').textContent = homeText[currentLang].selectorTitle;
+  document.getElementById('selector-sub').textContent = homeText[currentLang].selectorSub;
+  document.getElementById('clear-filters-btn').textContent = homeText[currentLang].clearFilters;
+  document.getElementById('selector-hint').textContent = homeText[currentLang].selectorHint;
+  document.getElementById('apply-filters-btn').textContent = homeText[currentLang].applyFilters;
+  document.getElementById('selector-filters').innerHTML = selectorConfig.map(group => `
+    <div class="filter-group">
+      <div class="filter-label">${homeText[currentLang].groups[group.id]}</div>
+      <div class="filter-pills">
+        ${group.options.map(option => `
+          <button class="filter-pill ${currentFilters[group.id] === option ? 'active' : ''}" onclick="setFilter('${group.id}','${option}')">
+            ${homeText[currentLang].options[option]}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function recommendationScore(rec) {
+  let score = 0;
+  for (const group of Object.keys(currentFilters)) {
+    const selected = currentFilters[group];
+    if (selected !== 'all' && rec[group]?.includes(selected)) score += 1;
+  }
+  return score;
+}
+
+function renderResults() {
+  const panel = document.getElementById('result-panel');
+  const anyActive = Object.values(currentFilters).some(value => value !== 'all');
+  document.getElementById('results-title').textContent = homeText[currentLang].resultsTitle;
+
+  if (!hasAppliedFilters) {
+    document.getElementById('results-summary').textContent = homeText[currentLang].resultsSummaryDefault;
+    document.getElementById('results-grid').innerHTML = '';
+    panel.hidden = false;
+    return;
+  }
+
+  let results = toolRecommendations
+    .map(rec => ({ ...rec, score: recommendationScore(rec) }))
+    .filter(rec => {
+      return Object.keys(currentFilters).every(group => {
+        const selected = currentFilters[group];
+        return selected === 'all' || rec[group]?.includes(selected);
+      });
+    });
+
+  if (anyActive) {
+    results = results.filter(rec => rec.score > 0);
+  }
+
+  results.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  const finalResults = (anyActive ? results : toolRecommendations).slice(0, 6);
+
+  document.getElementById('results-summary').textContent = finalResults.length
+    ? (anyActive
+      ? homeText[currentLang].resultsSummaryCount.replace('{count}', finalResults.length)
+      : homeText[currentLang].resultsSummaryDefault)
+    : homeText[currentLang].noResults;
+
+  document.getElementById('results-grid').innerHTML = finalResults.length ? finalResults.map(rec => `
+    <div class="result-card">
+      <div class="result-top">
+        <div class="result-id">
+          <img class="result-logo" src="${favicon(rec.domain)}" alt="${rec.name} logo" loading="lazy" referrerpolicy="no-referrer">
+          <div class="result-name">${rec.name}</div>
+        </div>
+        <div class="result-category">${t(categories.find(cat => cat.id === rec.category)?.title)}</div>
+      </div>
+      <div class="result-desc">${t(rec.desc)}</div>
+      <div class="result-why">${t(rec.why)}</div>
+    </div>
+  `).join('') : '';
+}
+
+function renderQuickGrid() {
+  document.getElementById('quick-title').textContent = homeText[currentLang].quickTitle;
+  document.getElementById('quick-subtitle').textContent = homeText[currentLang].quickSubtitle;
+  document.getElementById('quick-grid').innerHTML = uiText[currentLang].quick.map(([q, a]) => `
+    <div class="decision-card">
+      <div class="decision-q">${q}</div>
+      <div class="decision-a">${a}</div>
+    </div>
+  `).join('');
+}
+
+function renderSections() {
+  const root = document.getElementById('sections-root');
+  root.innerHTML = categories.map(cat => `
+    <div id="tab-${cat.id}" class="section">
+      <div class="section-header" style="--accent-bg:${cat.accentBg}">
+        <div class="section-icon">${cat.icon}</div>
+        <div>
+          <div class="section-title">${t(cat.title)}</div>
+          <div class="section-desc">${t(cat.desc)}</div>
+        </div>
+      </div>
+      <div class="when-label">${uiText[currentLang].whenLabel}</div>
+      <div class="when-chips">
+        ${cat.chips[currentLang].map(item => `<span class="when-chip">${item}</span>`).join('')}
+      </div>
+      <div class="tool-grid">
+        ${cat.tools.map(tool => toolCard(tool, cat.accent)).join('')}
+      </div>
+      <div class="decision-section">
+        <div class="decision-title">${uiText[currentLang].decisionTitle}</div>
+        <div class="decision-grid">
+          ${cat.decisions[currentLang].map(([q, a]) => `
+            <div class="decision-card">
+              <div class="decision-q">${q}</div>
+              <div class="decision-a">${a}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = `
+    <div class="nav-item active" data-tab="overview" onclick="switchTab('overview')">
+      <span class="nav-dot" style="background:var(--slate-mid)"></span>${uiText[currentLang].overviewSection}
+    </div>
+    ${categories.map(cat => `
+      <div class="nav-item" data-tab="${cat.id}" onclick="switchTab('${cat.id}')">
+        <span class="nav-dot" style="background:${cat.accent}"></span>${t(cat.title)}
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderChrome() {
+  document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('page-title').textContent = uiText[currentLang].title;
+  document.getElementById('page-subtitle').textContent = uiText[currentLang].subtitle;
+  document.getElementById('meta-block').innerHTML = uiText[currentLang].meta.replaceAll('\\n', '<br>');
+  document.getElementById('featured-block-title').textContent = homeText[currentLang].featuredTitle;
+  document.getElementById('featured-block-sub').textContent = homeText[currentLang].featuredSub;
+  document.getElementById('overview-panel-title').textContent = homeText[currentLang].taxonomyTitle;
+  document.getElementById('overview-panel-sub').textContent = homeText[currentLang].taxonomySub;
+  document.getElementById('hero-note-title-1').textContent = homeText[currentLang].heroTitle;
+  document.getElementById('hero-note-body-1').textContent = homeText[currentLang].heroBody;
+  document.getElementById('footer-left').textContent = uiText[currentLang].footerLeft;
+  document.getElementById('footer-mid').textContent = uiText[currentLang].footerMid;
+  document.getElementById('footer-right').textContent = uiText[currentLang].footerRight;
+}
+
+function renderAll() {
+  const active = document.querySelector('.nav-item.active')?.dataset.tab || 'overview';
+  renderChrome();
+  renderNav();
+  renderSelector();
+  renderResults();
+  renderOverviewTable();
+  renderOverview();
+  renderQuickGrid();
+  renderSections();
+  switchTab(active, false);
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+}
+
+function setFilter(group, option) {
+  currentFilters[group] = option;
+  renderSelector();
+}
+
+function resetFilters() {
+  currentFilters = { task: 'all', source: 'all', output: 'all', language: 'all' };
+  hasAppliedFilters = false;
+  renderSelector();
+  renderResults();
+}
+
+function applyFilters() {
+  hasAppliedFilters = true;
+  renderResults();
+}
+
+function switchTab(tabId, scroll = true) {
+  document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  const targetSection = document.getElementById(`tab-${tabId}`);
+  if (targetSection) targetSection.classList.add('active');
+  const targetNav = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+  if (targetNav) {
+    targetNav.classList.add('active');
+    targetNav.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+  if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentLang = btn.dataset.lang;
+    renderAll();
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>
