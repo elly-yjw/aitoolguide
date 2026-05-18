@@ -20,6 +20,20 @@
     return DATA.categories.find((category) => category.key === key) || DATA.categories[0];
   }
 
+    function hrefCategoryKey(href) {
+    try {
+      return new URL(href, location.href).searchParams.get("key");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function linkIcon(link) {
+    const categoryKey = hrefCategoryKey(link.href);
+    const category = categoryKey ? getCategory(categoryKey) : null;
+    return category?.icon || "AI";
+  }
+
   function queryPageType() {
     return document.body.dataset.page || "home";
   }
@@ -47,7 +61,7 @@
     navRoot.innerHTML = `
       <div class="topbar-wrap">
         <div class="topbar">
-          <a class="brand" href="ai_tools_guide.html">
+          <a class="brand" href="./">
             <div class="brand-mark">AI</div>
             <div>
               <div class="brand-title">AI Tool Selector</div>
@@ -87,7 +101,10 @@
                 <div class="mega-links">
                   ${column.links.map((link) => `
                     <a class="mega-link" href="${link.href}">
-                      <div class="mega-link-title">${t(link.title)}</div>
+                      <div class="mega-link-head">
+                        <span class="inline-icon">${linkIcon(link)}</span>
+                        <div class="mega-link-title">${t(link.title)}</div>
+                      </div>
                       <div class="mega-link-sub">${t(link.sub)}</div>
                     </a>
                   `).join("")}
@@ -171,6 +188,7 @@
             const category = getCategory(item.category);
             return `
               <div class="feature-card">
+                <div class="feature-icon" style="color:${category.color}">${category.icon}</div>
                 <div class="feature-topline">${t(item.label)}</div>
                 <div class="feature-title">${t(item.title)}</div>
                 <div class="feature-desc">${t(item.desc)}</div>
@@ -200,7 +218,7 @@
           <tbody>
             ${DATA.categories.map((category) => `
               <tr>
-                <td><a class="overview-row-name" href="ai_category.html?key=${category.key}">${t(category.title)}</a></td>
+                <td><a class="overview-row-name category-title-row" href="ai_category.html?key=${category.key}"><span class="inline-icon" style="color:${category.color}">${category.icon}</span><span>${t(category.title)}</span></a></td>
                 <td class="overview-row-desc">${t(category.summary)}</td>
                 <td class="overview-row-picks">${category.tools.slice(0, 3).map((tool) => tool.name).join(" / ")}</td>
               </tr>
@@ -328,9 +346,10 @@
 
     root.innerHTML = `
       <section class="page-header">
-        <a class="page-back" href="ai_tools_guide.html">${currentLang === "zh" ? "← 返回首页选择器" : "← Back to homepage selector"}</a>
+        <a class="page-back" href="./">${currentLang === "zh" ? "← 返回首页选择器" : "← Back to homepage selector"}</a>
         <div class="page-hero">
           <div class="eyebrow">${currentLang === "zh" ? "Category Page" : "Category Page"}</div>
+          <div class="page-hero-icon" style="color:${category.color}">${category.icon}</div>
           <h1>${t(category.title)}</h1>
           <p class="page-hero-sub">${t(category.description)}</p>
           <div class="chip-row">
@@ -375,6 +394,7 @@
         <div class="card-grid">
           ${DATA.categories.filter((item) => item.key !== category.key).slice(0, 4).map((item) => `
             <div class="feature-card">
+              <div class="feature-icon" style="color:${item.color}">${item.icon}</div>
               <div class="feature-title">${t(item.title)}</div>
               <div class="feature-desc">${t(item.summary)}</div>
               <a class="feature-link" href="ai_category.html?key=${item.key}">
